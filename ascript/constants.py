@@ -9,6 +9,18 @@ BACKSPACE = '\x08\x1b[K'
 RETURN = '\r\n'
 CONTROL_L = '\x1b[H\x1b[2J'
 
+MAX_KEYSTROKE_TIME = 0.7
+KEYSTROKE_TIME_SCALE = 0.32
+TIME_TO_THINK = 1
+TIME_AT_END = 5
+TIME_TO_READ_ONE_CHAR = 0.005
+TYPING_ERROR_RATE = 0.06
+
+# To kill
+ALL_COMMANDS = 'all-gitz'
+ALL_COMMANDS_CAST = Path(ALL_COMMANDS + '.cast')
+ALL_COMMANDS_JSON = ALL_COMMANDS_CAST.with_suffix('.json')
+
 OLD = False
 
 if OLD:
@@ -26,21 +38,9 @@ if OLD:
         'sh': MOVIES_ROOT / 'scripted',
     }
 
-    ALL_COMMANDS = 'all-gitz'
-
-    MAX_KEYSTROKE_TIME = 0.7
-    KEYSTROKE_TIME_SCALE = 0.32
-    TIME_TO_THINK = 1
-    TIME_AT_END = 5
-    TIME_TO_READ_ONE_CHAR = 0.005
-    TYPING_ERROR_RATE = 0.06
-
     def command_file(command, name):
         dirname = FILES[name]
         return (dirname / command).with_suffix('.' + name)
 
     def recorded_cast_files():
         yield from (f for f in CAST_DIR.iterdir() if f.suffix == '.cast')
-
-    ALL_COMMANDS_CAST = command_file(ALL_COMMANDS, 'cast')
-    ALL_COMMANDS_JSON = ALL_COMMANDS_CAST.with_suffix('.json')

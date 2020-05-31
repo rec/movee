@@ -24,7 +24,8 @@ def keystroke_times(lines):
 
 
 def all_keystrokes():
-    for f in constants.recorded_cast_files():
+    # constants.recorded_cast_files():
+    for f in []:
         lines = cast.Cast.read(f).lines
         yield from keystroke_times(lines)
 

@@ -1,6 +1,7 @@
 from .constants import ALL_COMMANDS_CAST
 from .constants import ALL_COMMANDS_JSON
-from gitz.program import run_proc
+
+# from gitz.program import run_proc
 import hashlib
 import json
 import webbrowser
@@ -16,7 +17,8 @@ def all_movie_url():
         if new_sha == sha:
             return url
 
-    lines = run_proc.run_proc(COMMAND)
+    # lines = run_proc.run_proc(COMMAND)
+    lines = []
     url = next(i for i in lines if 'https://' in i).strip()
     ALL_COMMANDS_JSON.write_text(json.dumps([sha, url]))
     webbrowser.open(url, new=0, autoraise=True)

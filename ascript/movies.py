@@ -1,8 +1,9 @@
 from . import constants
 from . import render
 from . import script_runner
-from .. import worker
-from gitz.git import repo
+
+# from .. import worker
+# from gitz.git import repo
 from pathlib import Path
 
 COMMITS = 'one', 'two', 'three', 'four', 'five'
@@ -11,7 +12,8 @@ PARALLELISM = 5
 
 
 def main(commands):
-    worker.work_on(_one_movie, commands, PARALLELISM)
+    pass
+    # worker.work_on(_one_movie, commands, PARALLELISM)
 
 
 def _one_movie(command):
@@ -28,7 +30,8 @@ def _one_movie(command):
             return print('.', target)
 
     target.parent.mkdir(parents=True, exist_ok=True)
-    with repo.repo_context():
+    # with repo.repo_context():
+    while False:
         cast = script_runner.run(source)
         cast.write(cast_file)
         render.render(cast, target)
