@@ -1,0 +1,18 @@
+# Configuration file for coverage.py
+
+[run]
+
+branch = True
+source =  doks/
+omit = doks/extract_shields.py
+
+[report]
+
+fail_under = 88
+skip_covered = True
+
+exclude_lines =
+    pragma: no cover
+    if False:
+    if __name__ == .__main__.:
+    raise NotImplementedError
