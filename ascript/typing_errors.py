@@ -12,46 +12,35 @@ KEYCHART = [
 ]
 
 
-class ErrorAdder:
-    def __init__(self, shift=0, row=0, column=0):
-        assert 0 <= shift <= 1
-        assert 0 <= row <= 1
-        assert 0 <= column <= 1
+def make_errors(line, shift_p=0, row_p=0, column_p=0):
+    def _error(key):
+        shift, row, column = KEYMAP[key]
 
-        self.shift = shift
-        self.row = row
-        self.column = column
+        if random.random() < shift_p:
+            shift = 1 - shift
+        if random.random() < row_p:
+            row += -1 + 2 * (random.random() < 0.5)
+        if random.random() < column_p:
+            column += -1 + 2 * (random.random() < 0.5)
 
-    def __call__(self, line):
-        rstate = random.getstate()
-        seed = hashlib.blake2s(line.encode()).hexdigest()
-        random.seed(seed)
-        try:
-            for k in line:
-                errored = self._apply(k)
-                if errored != k:
-                    yield errored
-                    yield constants.BACKSPACE
-                yield k
-        finally:
-            random.setstate(rstate)
+        new_key = KEYCHART[shift][row][column]
+        if new_key != key and new_key != ' ':
+            yield new_key
+            yield constants.BACKSPACE
 
-    def _apply(self, k):
-        try:
-            shift, row, column = KEYMAP[k]
+    rstate = random.getstate()
+    seed = hashlib.blake2s(line.encode()).hexdigest()
+    random.seed(seed)
 
-            if random.random() < self.shift:
-                shift = 1 - shift
-            if random.random() < self.row:
-                row += -1 + 2 * (random.random() < 0.5)
-            if random.random() < self.column:
-                column += -1 + 2 * (random.random() < 0.5)
-
-            result = KEYCHART[shift][row][column]
-            return k if result == ' ' else result
-
-        except (IndexError, KeyError):
-            return k
+    try:
+        for key in line:
+            try:
+                yield from _error(key)
+            except (IndexError, KeyError):
+                pass
+            yield key
+    finally:
+        random.setstate(rstate)
 
 
 def _invert(keychart):
