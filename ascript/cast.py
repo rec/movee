@@ -2,47 +2,59 @@
 Represents a single asciinema file for reading or writing
 """
 
-from . import constants
+from dataclasses import dataclass
 import json
 
 EPSILON = 0.001
+HEADER = {'version': 2, 'width': 100, 'height': 40}
+
+
+@dataclass
+class Line:
+    time: float = 0
+    io: str = 'o'
+    chars: str = ''
+
+    def to_list(self):
+        return [self.time, self.io, self.chars]
+
+    def to_json(self):
+        return
+
+    def offset(self, dt):
+        return Line(self.time + dt, self.io, self.chars)
 
 
 class Cast:
     def __init__(self, lines=None, header=None):
         self.lines = lines or []
-        self.header = header or constants.HEADER
+        self.header = header or HEADER
 
     @classmethod
     def read(cls, fp):
-        lines = []
+        header, *lines = (json.loads(i) for i in fp)
+        if not isinstance(header, dict):
+            raise TypeError('%s is not a dict' % header)
 
-        first = True
-        for line in fp:
-            value = json.loads(line)
-            if first:
-                if not isinstance(value, dict):
-                    raise TypeError('%s is not a dict' % value)
-                header = value
-                first = False
-            else:
-                if not isinstance(value, list):
-                    raise TypeError('%s is not list dict' % value)
-                lines.append(value)
+        if not all(isinstance(i, list) for i in lines):
+            raise TypeError('%s has non-list' % lines)
 
-        return cls(lines, header)
+        return cls([Line(*i) for i in lines], header)
 
     def append(self, keys, delta_time):
-        dt = 0 if delta_time < EPSILON else delta_time
-        self.lines.append([dt, 'o', keys])
+        time = self.lines[-1].time if self.lines else 0
+        if delta_time < EPSILON:
+            delta_time = 0
+        self.lines.append(Line(time + delta_time, 'o', keys))
 
     def write(self, fp):
-        for i in (self.header, *self.lines):
-            print(json.dumps(i), file=fp)
+        print(json.dumps(self.header), file=fp)
+        for line in self.lines:
+            print(json.dumps(line.to_list()), file=fp)
 
     def scale_by(self, ratio):
         for line in self.lines:
-            line[0] *= ratio
+            line.time *= ratio
 
     def extend(self, other, offset=0):
         for c in 'width', 'height':
@@ -53,7 +65,10 @@ class Cast:
                 self.header[c] = m
 
         if self.lines:
-            offset += self.lines[-1][0]
+            offset += self.lines[-1].time
 
-        lines = other.lines[:] if other is self else other.lines
-        self.lines.extend([t + offset, i, k] for t, i, k in lines)
+        lines = other.lines
+        if other is self:
+            lines = lines[:]
+        for line in lines:
+            self.lines.append(line.offset(offset))

@@ -1,9 +1,8 @@
+import hashlib
 from . import colors
-from pathlib import Path
 
 PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
 PROMPT = PROMPT.format(**vars(colors))
-HEADER = {'version': 2, 'width': 100, 'height': 40}
 
 BACKSPACE = '\x08\x1b[K'
 RETURN = '\r\n'
@@ -16,31 +15,6 @@ TIME_AT_END = 5
 TIME_TO_READ_ONE_CHAR = 0.005
 TYPING_ERROR_RATE = 0.06
 
-# To kill
-ALL_COMMANDS = 'all-gitz'
-ALL_COMMANDS_CAST = Path(ALL_COMMANDS + '.cast')
-ALL_COMMANDS_JSON = ALL_COMMANDS_CAST.with_suffix('.json')
 
-OLD = False
-
-if OLD:
-    FILE = Path(__file__)
-    ROOT = FILE.parents[2]
-
-    DOC_DIR = ROOT / 'doc'
-
-    MOVIES_ROOT = ROOT / 'gitz_doc/movies'
-    CAST_DIR = MOVIES_ROOT / 'recorded'
-
-    FILES = {
-        'svg': DOC_DIR / 'movies',
-        'cast': DOC_DIR / 'cast',
-        'sh': MOVIES_ROOT / 'scripted',
-    }
-
-    def command_file(command, name):
-        dirname = FILES[name]
-        return (dirname / command).with_suffix('.' + name)
-
-    def recorded_cast_files():
-        yield from (f for f in CAST_DIR.iterdir() if f.suffix == '.cast')
+def stable_hash(s):
+    return hashlib.blake2s(s.encode()).hexdigest()

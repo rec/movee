@@ -35,4 +35,4 @@ class TestCast(TestCase):
             [9, 'o', 'ls -cail'],
             [12, 'o', 'ls -cail'],
         ]
-        assert cast.lines == expected
+        assert [i.to_list() for i in cast.lines] == expected
