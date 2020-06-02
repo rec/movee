@@ -2,27 +2,13 @@
 Represents a single asciinema file for reading or writing
 """
 
-from dataclasses import dataclass
+from .line import Line
+from . import constants
 import json
 
 EPSILON = 0.001
 HEADER = {'version': 2, 'width': 100, 'height': 40}
-
-
-@dataclass
-class Line:
-    time: float = 0
-    io: str = 'o'
-    chars: str = ''
-
-    def to_list(self):
-        return [self.time, self.io, self.chars]
-
-    def to_json(self):
-        return
-
-    def offset(self, dt):
-        return Line(self.time + dt, self.io, self.chars)
+COMPOUND_KEYS = {constants.BACKSPACE, constants.RETURN}
 
 
 class Cast:
@@ -37,15 +23,20 @@ class Cast:
             raise TypeError('%s is not a dict' % header)
 
         if not all(isinstance(i, list) for i in lines):
-            raise TypeError('%s has non-list' % lines)
+            raise TypeError('%s contains non-list' % lines)
 
         return cls([Line(*i) for i in lines], header)
 
-    def append(self, keys, delta_time):
-        time = self.lines[-1].time if self.lines else 0
+    @property
+    def length(self):
+        return self.lines[-1].time if self.lines else 0
+
+    def append(self, chars, delta_time):
+        if delta_time < 0:
+            raise ValueError('delta_time < 0')
         if delta_time < EPSILON:
             delta_time = 0
-        self.lines.append(Line(time + delta_time, 'o', keys))
+        self.lines.append(Line(self.length + delta_time, 'o', chars))
 
     def write(self, fp):
         print(json.dumps(self.header), file=fp)
@@ -67,8 +58,16 @@ class Cast:
         if self.lines:
             offset += self.lines[-1].time
 
-        lines = other.lines
-        if other is self:
-            lines = lines[:]
-        for line in lines:
-            self.lines.append(line.offset(offset))
+        # A little more code to avoid doom if other.lines is self.lines
+        lines = (other.lines[i] for i in range(len(other.lines)))
+        self.lines.extend(i.offset(offset) for i in lines)
+
+    def keystroke_times(self):
+        time = None
+        for line in self.lines:
+            if len(line.chars) == 1 or line.chars in COMPOUND_KEYS:
+                if time is not None:
+                    yield line.time - time
+                time = line.time
+            else:
+                time = None

@@ -1,7 +1,7 @@
 from . import cast
 from . import constants
 
-# from . import keystrokes
+from . import keystrokes
 from . import typing_errors
 import sproc
 import sys
@@ -9,8 +9,8 @@ import time
 
 
 class ScriptRunner:
-    def __init__(self):
-        self.keystroke_times = []  # list(keystrokes.filtered_times())
+    def __init__(self, keystroke_times=keystrokes.DEFAULT_TIMES):
+        self.keystroke_times = keystroke_times
 
     def run(self, script, timing):
         self.cast = cast.Cast()
@@ -27,14 +27,14 @@ class ScriptRunner:
         return self.cast
 
     def _run_one(self, i, line):
-        self.index = hash(line)
+        self.index = constants.stable_hash(line)
         for k in typing_errors.with_errors(line):
             self._add_key(constants.RETURN if k == '\n' else k)
 
         lines = self.cast.lines
         before = len(lines)
-        for ln in line.split('&&'):
-            if not self._run(ln.strip()):
+        for li in line.split('&&'):
+            if not self._run(li.strip()):
                 break
         chars = sum(len(x[2]) for x in lines[before + 1 :])
 
@@ -60,7 +60,8 @@ class ScriptRunner:
         self._add('')
 
     def _add(self, keys):
-        self.cast.append(keys, time.time() - self.start_time)
+        absolute_time = time.time() - self.start_time
+        self.cast.append(keys, absolute_time - self.cast.length)
 
     def _add_line(self, line):
         self._add(line)
