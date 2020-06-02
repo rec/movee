@@ -3,6 +3,7 @@ Takes a text and then adds a certain percentage of typing errors to it
 using a crude model based on the layout of a standard keyboard.
 """
 from . import constants
+from . import util
 import random
 
 KEYCHART = [
@@ -31,7 +32,7 @@ def make_errors(line, shift_p=0, row_p=0, column_p=0):
             pass
 
     rstate = random.getstate()
-    random.seed(constants.stable_hash(line))
+    random.seed(util.stable_hash(line))
 
     try:
         for key in line:

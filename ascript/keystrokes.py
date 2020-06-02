@@ -1,4 +1,5 @@
 from . import constants
+from . import util
 from .cast import Cast
 import statistics
 
@@ -27,7 +28,7 @@ def print_keystrokes():
 
 def text_to_cast(text, prompt, times, post_delay=0):
     cast = Cast()
-    index = constants.stable_hash(text)
+    index = util.stable_hash(text)
 
     entries = [prompt, ''] + list(text) + [constants.RETURN]
     for i, e in enumerate(entries):

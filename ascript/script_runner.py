@@ -1,37 +1,78 @@
-from . import cast
+from .cast_recorder import CastRecorder
+from . import colors
 from . import constants
-
-from . import keystrokes
 from . import typing_errors
 import sproc
 import sys
-import time
+
+PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
+PROMPT = PROMPT.format(**vars(colors))
 
 
-class ScriptRunner:
-    def __init__(self, keystroke_times=keystrokes.DEFAULT_TIMES):
-        self.keystroke_times = keystroke_times
+def run_script(script, timing, prompt):
+    rec = CastRecorder()
+    rec.start()
+    rec.add(constants.CONTROL_L, constants.PROMPT)
 
-    def run(self, script, timing):
-        self.cast = cast.Cast()
-        self.timing = timing
-        self.start_time = time.time()
-        self._add(constants.CONTROL_L)
-        self._add(constants.PROMPT)
+    lines = list(script.open())
+
+    for i, line in enumerate(lines):
+        _run_one(i, line)
+
+    rec.wait(timing.time_at_end)
+    return rec.cast
+
+
+def _run_one(self, i, line):
+    self.rec.hash_line(line)
+    for k in typing_errors.with_errors(line):
+        self.rec.add_key(constants.RETURN if k == '\n' else k)
+
+    lines = self.rec.cast.lines
+    before = len(lines)
+    for li in line.split('&&'):
+        if not self._run(li.strip()):
+            break
+    chars = sum(len(x[2]) for x in lines[before + 1 :])
+
+    if not (
+        i < len(self.lines) - 1
+        and line.strip().startswith('#')
+        and self.lines[i + 1].strip().startswith('#')
+    ):
+        self.rec.add(constants.RETURN)
+        self.rec.add(PROMPT)
+        t = constants.TIME_TO_THINK + chars * constants.TIME_TO_READ_ONE_CHAR
+        self.rec.wait(t)
+
+
+def _run(self, cmd):
+    try:
+        sproc.sproc(cmd, self.rec.add_line, shell=True)
+        return True
+    except Exception:
+        return
+
+
+class ScriptRunner(CastRecorder):
+    def start(self, script, timing):
+        self.rec.start()
+        self.rec.add(constants.CONTROL_L, constants.PROMPT)
+
         self.lines = list(i for i in script.open() if i.strip())
 
         for i, line in enumerate(self.lines):
             self._run_one(i, line)
 
-        self._wait(timing.TIME_AT_END)
-        return self.cast
+        self.rec.wait(timing.time_at_end)
+        return self.rec.cast
 
     def _run_one(self, i, line):
-        self.index = constants.stable_hash(line)
+        self.rec.hash_line(line)
         for k in typing_errors.with_errors(line):
-            self._add_key(constants.RETURN if k == '\n' else k)
+            self.rec.add_key(constants.RETURN if k == '\n' else k)
 
-        lines = self.cast.lines
+        lines = self.rec.cast.lines
         before = len(lines)
         for li in line.split('&&'):
             if not self._run(li.strip()):
@@ -43,38 +84,23 @@ class ScriptRunner:
             and line.strip().startswith('#')
             and self.lines[i + 1].strip().startswith('#')
         ):
-            self._add(constants.RETURN)
-        self._add(constants.PROMPT)
-        t = constants.TIME_TO_THINK + chars * constants.TIME_TO_READ_ONE_CHAR
-        self._wait(t)
+            self.rec.add(constants.RETURN)
+            self.rec.add(PROMPT)
+            t = (
+                constants.TIME_TO_THINK
+                + chars * constants.TIME_TO_READ_ONE_CHAR
+            )
+            self.rec.wait(t)
 
     def _run(self, cmd):
         try:
-            sproc.sproc(cmd, self._add_line, shell=True)
+            sproc.sproc(cmd, self.rec.add_line, shell=True)
             return True
         except Exception:
             return
 
-    def _wait(self, delta):
-        self.start_time -= delta
-        self._add('')
 
-    def _add(self, keys):
-        absolute_time = time.time() - self.start_time
-        self.cast.append(keys, absolute_time - self.cast.length)
-
-    def _add_line(self, line):
-        self._add(line)
-        self._add(constants.RETURN)
-
-    def _add_key(self, key):
-        self.index %= len(self.keystroke_times)
-        self.start_time -= self.keystroke_times[self.index]
-        self.index += 1
-        self._add(key)
-
-
-run = ScriptRunner().run
+run = ScriptRunner()._run
 
 
 if __name__ == '__main__':
