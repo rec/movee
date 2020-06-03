@@ -32,13 +32,13 @@ def trailing_slash(lines):
 
     for line in lines:
         if line.strip().endswith('\\'):
-            line_queue.append(line[:-1])
+            line_queue.append(line)
         elif line_queue:
             line_queue.append(line)
-            yield ''.join(line_queue)
-            line_queue.clear()
+            yield line_queue
+            line_queue = []
         else:
-            yield line
+            yield [line]
 
     if line_queue:
-        yield ''.join(line_queue)
+        yield line_queue

@@ -42,17 +42,17 @@ class TrailingSlashTest(TestCase):
         assert trailing([]) == []
 
     def test_no_trailing(self):
-        assert trailing('a') == ['a']
-        assert trailing('abc') == ['a', 'b', 'c']
+        assert trailing('a') == [['a']]
+        assert trailing('abc') == [['a'], ['b'], ['c']]
 
     def test_simple(self):
         lines = ['a', 'b\\', 'c\\', 'd', 'e']
         actual = trailing(lines)
-        expected = ['a', 'bcd', 'e']
+        expected = [['a'], ['b\\', 'c\\', 'd'], ['e']]
         assert actual == expected
 
     def test_edge(self):
         lines = ['a', 'b\\', 'c\\']
         actual = trailing(lines)
-        expected = ['a', 'bc']
+        expected = [['a'], ['b\\', 'c\\']]
         assert actual == expected
