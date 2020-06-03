@@ -4,6 +4,7 @@ using a crude model based on the layout of a standard keyboard.
 """
 from . import constants
 from . import util
+from dataclasses import dataclass
 import random
 
 KEYCHART = [
@@ -12,16 +13,32 @@ KEYCHART = [
 ]
 
 
-def make_errors(line, shift_p=0, row_p=0, column_p=0):
-    def _error(key):
+@dataclass
+class ErrorMaker:
+    shift: float = 0
+    row: float = 0
+    column: float = 0
+
+    def __call__(self, line):
+        rstate = random.getstate()
+        random.seed(util.stable_hash(line))
+
+        try:
+            for key in line:
+                yield from self._error(key)
+                yield key
+        finally:
+            random.setstate(rstate)
+
+    def _error(self, key):
         try:
             shift, row, column = KEYMAP[key]
 
-            if random.random() < shift_p:
+            if random.random() < self.shift:
                 shift = 1 - shift
-            if random.random() < row_p:
+            if random.random() < self.row:
                 row += -1 + 2 * (random.random() < 0.5)
-            if random.random() < column_p:
+            if random.random() < self.column:
                 column += -1 + 2 * (random.random() < 0.5)
 
             new_key = KEYCHART[shift][row][column]
@@ -30,16 +47,6 @@ def make_errors(line, shift_p=0, row_p=0, column_p=0):
                 yield constants.BACKSPACE
         except (IndexError, KeyError):
             pass
-
-    rstate = random.getstate()
-    random.seed(util.stable_hash(line))
-
-    try:
-        for key in line:
-            yield from _error(key)
-            yield key
-    finally:
-        random.setstate(rstate)
 
 
 def _invert(keychart):

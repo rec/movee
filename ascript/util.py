@@ -67,4 +67,5 @@ def trailing_slash(lines):
 
 
 def split_script(lines):
+    # Returns a list of lists of lists of strings, all lists non-empty
     return split_by(trailing_slash(lines), is_comment_lines)
