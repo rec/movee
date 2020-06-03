@@ -2,6 +2,7 @@ from .cast_recorder import CastRecorder
 from . import colors
 from . import constants
 from . import typing_errors
+from . import util
 import sproc
 import sys
 
@@ -9,15 +10,15 @@ PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
 PROMPT = PROMPT.format(**vars(colors))
 
 
-def run_script(script, timing, prompt):
+def run_script(script, timing, prompt, errors):
     rec = CastRecorder()
     rec.start()
-    rec.add(constants.CONTROL_L, constants.PROMPT)
+    rec.add(constants.CONTROL_L, prompt)
 
-    lines = list(script.open())
-
-    for i, line in enumerate(lines):
-        _run_one(i, line)
+    for chunk in util.split_script(script.open()):
+        # chunk is a list of lists of strings
+        is_comment = chunk[0][0].strip().startswith('#')
+        print(is_comment)
 
     rec.wait(timing.time_at_end)
     return rec.cast
