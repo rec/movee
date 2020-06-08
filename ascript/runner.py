@@ -8,13 +8,21 @@ import sys
 BASH = '/bin/bash', '-i'
 MARKER = 'xyzzyxyzzy'
 STDOUT, STDERR, STDIN = range(3)
+NAMES = 'stdout', 'stderr', 'stdin'
+POPEN_ARGS = {
+    'stdin': PIPE,
+    'stdout': PIPE,
+    'stderr': PIPE,
+    'encoding': 'utf8',
+    'shell': not True,
+}
 
 # https://dzone.com/articles/interacting-with-a-long-running-child-process-in-p
 
 
 @contextlib.contextmanager
 def run(cmd, marker, callback, timeout=0.2):
-    proc = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE, encoding='utf8')
+    proc = Popen(cmd, **POPEN_ARGS)
 
     def printline(*parts):
         print(*parts, file=proc.stdin)
@@ -60,7 +68,7 @@ def shell_commands(commands, callback, shell=BASH, marker='echo {}'):
             line = ''
             while finished < 2:
                 name, line = queue.get()
-                if marker in line.strip():
+                if line and marker in line.strip():
                     break
 
                 callback(name, line)
@@ -71,24 +79,32 @@ def shell_commands(commands, callback, shell=BASH, marker='echo {}'):
         callback(STDIN, None)
 
 
-def OLD_shell_commands(commands, shell=BASH):
-    results = []
-
-    def callback(*args):
-        results.append(args)
-
-    with run(shell, callback):
-        for cmd in commands:
-            results.append(('c', cmd))
-            print(cmd)
-        results.append(('c', None))
-
-    return results
+def printer(name, line):
+    print('%7s:' % NAMES[name], line)
 
 
-def print_shell_commands(filename, shell=BASH):
-    shell_commands(open(filename), callback=print, shell=shell)
+def print_shell_commands(filename, shell=BASH, marker='echo {}'):
+    shell_commands(
+        open(filename), callback=printer, shell=shell, marker=marker
+    )
+
+
+def print_python_commands(filename):
+    print_shell_commands(filename, ('python3', '-i'), "print('{}')")
+
+
+def run_python_commands():
+    def commands():
+        while True:
+            s = input('>>> ')
+            if not s:
+                break
+            yield s
+
+    shell_commands(commands(), printer, ('python3', '-i'), "print('{}')")
 
 
 if __name__ == '__main__':
-    print_shell_commands(sys.argv[1])
+    # print_shell_commands(sys.argv[1])
+    print_python_commands(sys.argv[1])
+    # run_python_commands()
