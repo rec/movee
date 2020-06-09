@@ -62,22 +62,3 @@ async def run(execute, set_prompts, commands, callback, shell=False):
         proc.kill()
 
     await asyncio.gather(read_err(), read_out(), write())
-
-
-def yield_inputs(prompt):
-    while True:
-        s = input(prompt)
-        if not s:
-            break
-        yield s
-
-
-def main():
-    commands = 'echo HELLO', 'ls', 'echo BYE'
-    # commands = yield_inputs('$ ')
-
-    asyncio.run(run('/bin/bash -i', BASH_PROMPT, commands, print))
-
-
-if __name__ == '__main__':
-    main()
