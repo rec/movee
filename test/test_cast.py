@@ -1,4 +1,4 @@
-from ascript.cast import Cast
+from ascript.cast import Cast, EPSILON
 from unittest import TestCase
 import io
 
@@ -22,6 +22,19 @@ class TestCast(TestCase):
         cast = Cast()
         cast.append('ls -cail', 1)
         _round_trip(cast)
+
+    def test_error(self):
+        cast = Cast()
+        cast.append('ls -cail', 1)
+        with self.assertRaises(ValueError):
+            cast.extend(cast, -2)
+        with self.assertRaises(ValueError):
+            cast.append('hello', -2)
+
+    def test_epsilon(self):
+        cast = Cast()
+        cast.append('ls -cail', EPSILON / 2)
+        assert cast.lines[0].time == 0
 
     def test_extend(self):
         cast = Cast()

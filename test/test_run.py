@@ -1,6 +1,6 @@
+from .travis import skip_if_travis
 from ascript import run
 import asyncio
-import os
 import unittest
 
 
@@ -14,10 +14,7 @@ def bash(*commands, kill_after=1):
     return results
 
 
-@unittest.skipIf(
-    os.getenv('TRAVIS', '').lower().startswith('t'),
-    'Run tests do not work in travis :-(',
-)
+@skip_if_travis
 class TestRun(unittest.TestCase):
     def test_empty(self):
         actual = bash()

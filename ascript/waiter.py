@@ -10,6 +10,9 @@ class Waiter:
     duration: float = 1
     cycle_time: float = 0.1
 
+    def is_alive(self):
+        return (t := getattr(self, 'thread', None)) and t.is_alive()
+
     def start(self):
         if self.callback:
             self._finish = time.time() + self.duration

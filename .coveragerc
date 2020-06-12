@@ -1,16 +1,15 @@
 # Configuration file for coverage.py
 
 [run]
-
-branch = True
-source =  ascript/
+  branch = True
+  source = ascript/
+  omit = ascript/keystrokes.py
 
 [report]
+  fail_under = 64
+  skip_covered = True
 
-fail_under = 50
-skip_covered = True
-
-exclude_lines =
+  exclude_lines =
     pragma: no cover
     if False:
     if __name__ == .__main__.:

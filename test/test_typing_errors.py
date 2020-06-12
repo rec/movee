@@ -16,7 +16,7 @@ class ErrorAdderTest(TestCase):
         expected = ['D', 'w:', 'o#', 'rW', 'd']
         assert actual == expected
 
-    def test_tiny(self):
+    def test_longer(self):
         before = 'a much longer sentence with errors'
         after = ErrorMaker(0.03, 0.08, 0.09)(before)
         actual = ''.join(after).split(constants.BACKSPACE)
@@ -30,3 +30,20 @@ class ErrorAdderTest(TestCase):
             's',
         ]
         assert actual == expected
+
+    def test_longer_2(self):
+        before = 'a very very very much longer sentence with errors'
+        after = []
+        delete = False
+        for ch in ErrorMaker(1, 1, 1)(before):
+            if ch == constants.BACKSPACE:
+                delete = True
+            else:
+                if delete:
+                    delete = False
+                else:
+                    after.append(ch)
+
+        assert len(before) == len(after)
+        same = [i for i, j in zip(before, after) if i == j]
+        assert len(same) == 9

@@ -13,18 +13,14 @@ COMPOUND_KEYS = {constants.BACKSPACE, constants.RETURN}
 
 class Cast:
     def __init__(self, lines=None, header=None):
+        self.header = dict(HEADER)
+        if header:
+            self.header.update(header)
         self.lines = lines or []
-        self.header = header or HEADER
 
     @classmethod
     def read(cls, fp):
         header, *lines = (json.loads(i) for i in fp)
-        if not isinstance(header, dict):
-            raise TypeError('%s is not a dict' % header)
-
-        if not all(isinstance(i, list) for i in lines):
-            raise TypeError('%s contains non-list' % lines)
-
         return cls([Line(*i) for i in lines], header)
 
     @property
@@ -48,6 +44,8 @@ class Cast:
             line.time *= ratio
 
     def extend(self, other, offset=0):
+        if offset < 0:
+            raise ValueError('offset < 0')
         for c in 'width', 'height':
             s = self.header.get(c, 0)
             o = other.header.get(c, 0)
@@ -58,8 +56,8 @@ class Cast:
         if self.lines:
             offset += self.lines[-1].time
 
-        # A little more code to avoid doom if other.lines is self.lines
-        lines = (other.lines[i] for i in range(len(other.lines)))
+        lines = other.lines
+        lines = lines[:] if lines is self.lines else lines
         self.lines.extend(i.offset(offset) for i in lines)
 
     def keystroke_times(self):
