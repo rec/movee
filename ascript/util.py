@@ -1,14 +1,4 @@
-import contextlib
 import hashlib
-import traceback
-
-
-@contextlib.contextmanager
-def print_exception():
-    try:
-        yield
-    except Exception:
-        traceback.print_exc()
 
 
 def stable_hash(s):
