@@ -18,9 +18,7 @@ class Runner:
     set_prompts: str
     exit: str
 
-    async def __call__(
-        self, callback, *commands, kill_after=None, shell=False
-    ):
+    async def __call__(self, callback, commands, kill_after=None, shell=False):
         self.callback = callback
         cmd = self.execute
         if shell:

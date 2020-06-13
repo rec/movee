@@ -30,6 +30,10 @@ class CastRecorder:
         self.index += 1
         self.add(key)
 
+    def add_keys(self, keys):
+        for k in keys:
+            self.add_key(k)
+
     def wait(self, delta):
         self.start_time -= delta
         self.add('')

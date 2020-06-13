@@ -17,17 +17,17 @@ def bash(*commands, kill_after=1):
 @skip_if_travis
 class TestRun(unittest.TestCase):
     def test_empty(self):
-        actual = bash()
+        actual = bash([])
         expected = [['P', '1']]
         # TODO: oh, dear, this test failed ONCE intermittently and not
         # again in twenty tests.  The issue was that it once captured the
         # final ('I', 'exit') command, so there's a race condition in there.
-        # Let's see what Travis says.
+        # Let's see what Travis says.  UPDATE: I can't get it to work on Travis
 
         assert actual == expected
 
     def test_simple_run(self):
-        actual = bash('echo TEST')
+        actual = bash(['echo TEST'])
         expected = [
             ['P', '1'],
             ['I', 'echo TEST'],

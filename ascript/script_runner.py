@@ -1,108 +1,41 @@
 from .cast_recorder import CastRecorder
 from . import colors
 from . import constants
-from . import typing_errors
-from . import util
-import sproc
-import sys
+from . import run
 
 PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
 PROMPT = PROMPT.format(**vars(colors))
 
 
 def run_script(script, timing, prompt, errors):
+    is_python = script.endswith('.py')
+    if not (is_python or script.endswith('.sh')):
+        raise ValueError('Do not understand script %s' % script)
+
     rec = CastRecorder()
-    rec.start()
     rec.add(constants.CONTROL_L, prompt)
 
-    for chunk in util.split_script(script.open()):
-        # chunk is a list of lists of strings
-        is_comment = chunk[0][0].strip().startswith('#')
-        print(is_comment)
+    def callback(event, line):
+        if event is run.KILL:
+            pass
+        elif event is run.IN:
+            rec.add_keys(line)
+        elif event is run.PROMPT:
+            if line.startswith('1'):
+                rec.add_line('>>> ' if is_python else prompt)
+            elif line.startwith('2'):
+                rec.add_line('... ' if is_python else '> ')
+            else:
+                assert False, line
+        else:
+            assert event in run.OUT, run.err
+            rec.add_line(line.rstrip('\n'))
 
-    rec.wait(timing.time_at_end)
-    return rec.cast
+    runner = run.python if is_python else run.bash
+    runner(callback, open(script))
 
-
-def _run_one(self, i, line):
-    self.rec.hash_line(line)
-    for k in typing_errors.with_errors(line):
-        self.rec.add_key(constants.RETURN if k == '\n' else k)
-
-    lines = self.rec.cast.lines
-    before = len(lines)
-    for li in line.split('&&'):
-        if not self._run(li.strip()):
-            break
-    chars = sum(len(x[2]) for x in lines[before + 1 :])
-
-    if not (
-        i < len(self.lines) - 1
-        and line.strip().startswith('#')
-        and self.lines[i + 1].strip().startswith('#')
-    ):
-        self.rec.add(constants.RETURN)
-        self.rec.add(PROMPT)
-        t = constants.TIME_TO_THINK + chars * constants.TIME_TO_READ_ONE_CHAR
-        self.rec.wait(t)
-
-
-def _run(self, cmd):
-    try:
-        sproc.sproc(cmd, self.rec.add_line, shell=True)
-        return True
-    except Exception:
-        return
-
-
-class ScriptRunner(CastRecorder):
-    def start(self, script, timing):
-        self.rec.start()
-        self.rec.add(constants.CONTROL_L, constants.PROMPT)
-
-        self.lines = list(i for i in script.open() if i.strip())
-
-        for i, line in enumerate(self.lines):
-            self._run_one(i, line)
-
-        self.rec.wait(timing.time_at_end)
-        return self.rec.cast
-
-    def _run_one(self, i, line):
-        self.rec.hash_line(line)
-        for k in typing_errors.with_errors(line):
-            self.rec.add_key(constants.RETURN if k == '\n' else k)
-
-        lines = self.rec.cast.lines
-        before = len(lines)
-        for li in line.split('&&'):
-            if not self._run(li.strip()):
-                break
-        chars = sum(len(x[2]) for x in lines[before + 1 :])
-
-        if not (
-            i < len(self.lines) - 1
-            and line.strip().startswith('#')
-            and self.lines[i + 1].strip().startswith('#')
-        ):
-            self.rec.add(constants.RETURN)
-            self.rec.add(PROMPT)
-            t = (
-                constants.TIME_TO_THINK
-                + chars * constants.TIME_TO_READ_ONE_CHAR
-            )
-            self.rec.wait(t)
-
-    def _run(self, cmd):
-        try:
-            sproc.sproc(cmd, self.rec.add_line, shell=True)
-            return True
-        except Exception:
-            return
-
-
-run = ScriptRunner()._run
+    return rec
 
 
 if __name__ == '__main__':
-    run('gitz_doc/cast/scripts/test.sh').write(sys.stdout)
+    pass

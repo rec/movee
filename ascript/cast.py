@@ -49,9 +49,7 @@ class Cast:
         for c in 'width', 'height':
             s = self.header.get(c, 0)
             o = other.header.get(c, 0)
-            m = max(s, o)
-            if m > 0:
-                self.header[c] = m
+            self.header[c] = max(s, o)
 
         if self.lines:
             offset += self.lines[-1].time
