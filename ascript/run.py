@@ -23,7 +23,9 @@ class Runner:
         cmd = self.execute
         if shell:
             create = asyncio.create_subprocess_shell
-            if not isinstance(cmd, str):
+            if isinstance(cmd, str):
+                cmd = [cmd]
+            else:
                 cmd = [shlex.join(cmd)]
         else:
             create = asyncio.create_subprocess_exec
