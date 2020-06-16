@@ -24,7 +24,7 @@ class Cast:
         return cls([Line(*i) for i in lines], header)
 
     @property
-    def length(self):
+    def duration(self):
         return self.lines[-1].time if self.lines else 0
 
     def append(self, chars, delta_time):
@@ -32,7 +32,7 @@ class Cast:
             raise ValueError('delta_time < 0')
         if delta_time < EPSILON:
             delta_time = 0
-        self.lines.append(Line(self.length + delta_time, 'o', chars))
+        self.lines.append(Line(self.duration + delta_time, 'o', chars))
 
     def write(self, fp):
         print(json.dumps(self.header), file=fp)

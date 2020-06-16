@@ -10,8 +10,8 @@ PYTHON_PS = '>>> ', '... '
 
 
 class CastRecorder:
-    def __init__(self, errors, keystroke_times):
-        self.keystroke_times = keystroke_times
+    def __init__(self, errors, key_times):
+        self.key_times = key_times
         self.errors = errors
 
     def record(self, script):
@@ -34,8 +34,9 @@ class CastRecorder:
 
     def _callback(self, event, line):
         if event is run.IN:
-            for k in self.errors(line):
-                self._add_key(k)
+            for k, t in self.key_times.to_type(line):
+                self.start_time -= t
+                self._add(k)
 
         elif event is run.PROMPT:
             self._add(self.ps['12'.index(line[0])])
@@ -46,11 +47,5 @@ class CastRecorder:
             self._add(constants.RETURN)
 
     def _add(self, key):
-        delta_time = (time.time() - self.start_time) - self.cast.length
+        delta_time = (time.time() - self.start_time) - self.cast.duration
         self.cast.append(key, delta_time)
-
-    def _add_key(self, key):
-        self.index %= len(self.keystroke_times)
-        self.start_time -= self.keystroke_times[self.index]
-        self.index += 1
-        self._add(key)
