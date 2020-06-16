@@ -1,39 +1,56 @@
 import time
 from .cast import Cast
-from . import keystrokes
+from . import colors
 from . import constants
-from . import util
+from . import run
+
+PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
+BASH_PS = PROMPT.format(**vars(colors)), '> '
+PYTHON_PS = '>>> ', '... '
 
 
 class CastRecorder:
-    def __init__(self, keystroke_times=keystrokes.DEFAULT_TIMES):
+    def __init__(self, errors, keystroke_times):
         self.keystroke_times = keystroke_times
+        self.errors = errors
+
+    def record(self, script):
+        if script.endswith('.py'):
+            self.runner = run.python
+            self.ps = PYTHON_PS
+        else:
+            self.runner = run.bash
+            if not script.endswith('.sh'):
+                raise ValueError('Do not understand script %s' % script)
+            self.ps = BASH_PS
+
         self.cast = Cast()
         self.index = 0
         self.start_time = time.time()
 
-    def hash_line(self, line):
-        self.index = util.stable_hash(line)
+        self._add(constants.CONTROL_L)
+        self._add(self.prompt)
+        self.runner(self._callback, open(script))
 
-    def add(self, *keys):
-        for k in keys:
-            delta_time = (time.time() - self.start_time) - self.cast.length
-            self.cast.append(k, delta_time)
+    def _callback(self, event, line):
+        if event is run.IN:
+            for k in self.errors(line):
+                self._add_key(k)
 
-    def add_line(self, line):
-        self.add(line)
-        self.add(constants.RETURN)
+        elif event is run.PROMPT:
+            self._add(self.ps['12'.index(line[0])])
+            self._add(constants.RETURN)
 
-    def add_key(self, key):
+        elif event in (run.OUT, run.ERR):
+            self._add(line.rstrip('\n'))
+            self._add(constants.RETURN)
+
+    def _add(self, key):
+        delta_time = (time.time() - self.start_time) - self.cast.length
+        self.cast.append(key, delta_time)
+
+    def _add_key(self, key):
         self.index %= len(self.keystroke_times)
         self.start_time -= self.keystroke_times[self.index]
         self.index += 1
-        self.add(key)
-
-    def add_keys(self, keys):
-        for k in keys:
-            self.add_key(k)
-
-    def wait(self, delta):
-        self.start_time -= delta
-        self.add('')
+        self._add(key)
