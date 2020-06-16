@@ -1,7 +1,8 @@
 from . import constants
 from . import util
 from .cast import Cast
-import statistics
+from dataclasses import dataclass
+
 
 DEFAULT_TIMES = (
     [0.217, 0.103, 0.112, 0.177, 0.072, 0.16, 0.072, 0.184]
@@ -9,21 +10,6 @@ DEFAULT_TIMES = (
     + [0.099, 0.11, 0.064, 0.209, 0.127, 0.288, 0.047, 0.16]
     + [0.384, 0.175, 0.05, 0.136, 0.296, 0.225, 0.295]
 )
-
-
-def all_keystrokes(files):
-    for f in files:
-        yield from Cast.read(f).keystroke_times()
-
-
-def print_keystrokes():
-    data = list(all_keystrokes())
-
-    print(statistics.mean(data), statistics.stdev(data))
-    print()
-
-    for d in data:
-        print(round(d, 3))
 
 
 def text_to_cast(text, prompt, times, post_delay=0):
@@ -41,5 +27,19 @@ def text_to_cast(text, prompt, times, post_delay=0):
     return cast
 
 
-if __name__ == '__main__':
-    print_keystrokes()
+@dataclass
+class KeyTiming:
+    max_keystroke_time: float = 0.7
+    keystroke_time_scale: float = 0.32
+    time_to_think: float = 1
+    time_at_end: float = 5
+    time_to_read_one_char: float = 0.005
+
+    def filter(self, times):
+        for t in times:
+            t *= self.keystroke_time_scale
+            if t <= self.max_keystroke_time:
+                yield t
+
+    def read_text(self, chars):
+        return self.time_to_think + chars * self.time_to_read_one_char
