@@ -11,8 +11,8 @@ USAGE
     ascript my_file.py [README.rst]
 
 """
-
 import sys
+from .cast_recorder import CastRecorder
 
 __all__ = ('main',)
 
@@ -28,13 +28,13 @@ def main(source, target=None):
         path to the output file or ``None``, in which case
         output is printed to stdout
     """
-    lines = []
+    cast = CastRecorder().record(source)
 
     if target:
         with open(target, 'w') as fp:
-            print(lines, file=fp)
+            cast.write(fp)
     else:
-        print(lines)
+        cast.write(sys.stdout)
 
 
 if __name__ == '__main__':

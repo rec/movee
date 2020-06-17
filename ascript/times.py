@@ -28,8 +28,8 @@ class KeyTimes:
         self.keystroke_times = [t for t in kt if t <= self.time.keystroke_max]
         self.times = times
 
-    def to_read(self, line):
-        return len(line) * self.times.to_read_one_char + self.times.after_read
+    def to_read(self, chars):
+        return chars * self.times.to_read_one_char + self.times.after_read
 
     def to_type(self, line):
         yield '', self.times.before_typing

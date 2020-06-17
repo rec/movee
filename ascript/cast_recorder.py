@@ -3,6 +3,8 @@ from .cast import Cast
 from . import colors
 from . import constants
 from . import run
+from . import times
+from . import typing_errors
 
 PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
 BASH_PS = PROMPT.format(**vars(colors)), '> '
@@ -10,9 +12,9 @@ PYTHON_PS = '>>> ', '... '
 
 
 class CastRecorder:
-    def __init__(self, errors, key_times):
-        self.key_times = key_times
-        self.errors = errors
+    def __init__(self, errors=None, key_times=None):
+        self.errors = errors or typing_errors.ErrorMaker(0.08, 0.08, 0.08)
+        self.key_times = key_times or times.KeyTimes()
 
     def record(self, script):
         if script.endswith('.py'):
@@ -25,14 +27,26 @@ class CastRecorder:
             self.ps = BASH_PS
 
         self.cast = Cast()
-        self.index = 0
         self.start_time = time.time()
+        self.chars = 0
 
         self._add(constants.CONTROL_L)
         self._add(self.prompt)
         self.runner(self._callback, open(script))
+        return self.cast
 
     def _callback(self, event, line):
+        if event in (run.OUT, run.ERR):
+            self._add(line.rstrip('\n'))
+            self._add(constants.RETURN)
+            self.chars += len(line)
+            return
+
+        if self.chars:
+            self.start_time -= self.key_times.to_read(self.chars)
+            self._add('')
+            self.chars = 0
+
         if event is run.IN:
             for k, t in self.key_times.to_type(line):
                 self.start_time -= t
@@ -40,10 +54,6 @@ class CastRecorder:
 
         elif event is run.PROMPT:
             self._add(self.ps['12'.index(line[0])])
-            self._add(constants.RETURN)
-
-        elif event in (run.OUT, run.ERR):
-            self._add(line.rstrip('\n'))
             self._add(constants.RETURN)
 
     def _add(self, key):
