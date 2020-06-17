@@ -13,10 +13,10 @@ DEFAULT_TIMES = (
 @dataclass
 class Times:
     keystroke_max: float = 0.7
-    keystroke_scale: float = 0.32
+    keystroke_scale: float = 1 / 3
     after_read: float = 1
     at_end: float = 5
-    to_read_one_char: float = 0.005
+    to_read_one_char: float = 0.01
     before_typing: float = 2
     after_typing: float = 2
 
@@ -25,7 +25,7 @@ class KeyTimes:
     def __init__(self, times=None, keystroke_times=DEFAULT_TIMES):
         times = times or Times()
         kt = (t * times.keystroke_scale for t in keystroke_times)
-        self.keystroke_times = [t for t in kt if t <= self.time.keystroke_max]
+        self.keystroke_times = [t for t in kt if t <= times.keystroke_max]
         self.times = times
 
     def to_read(self, chars):
@@ -34,7 +34,7 @@ class KeyTimes:
     def to_type(self, line):
         yield '', self.times.before_typing
 
-        index = util.stable_hash(line)
+        index = int(util.stable_hash(line)[:8], 16)
         for char in line:
             index = (index + 1) % len(self.keystroke_times)
             time = self.keystroke_times[index]
