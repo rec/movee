@@ -16,6 +16,7 @@ class Times:
     keystroke_scale: float = 1 / 3
     after_read: float = 1
     at_end: float = 5
+    to_print_one_line: float = 0.05
     to_read_one_char: float = 0.01
     before_typing: float = 2
     after_typing: float = 2

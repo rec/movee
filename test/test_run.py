@@ -37,3 +37,10 @@ class TestRun(unittest.TestCase):
                 ['P', '1'],
             ]
             assert actual == expected
+
+    def DONT_test_kill_after(self):
+        # Freezes!
+        for shell in False, True:
+            actual = bash('sleep 0.5', 'echo NO', shell=shell, kill_after=0.2)
+            expected = []
+            assert actual == expected

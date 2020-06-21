@@ -5,6 +5,7 @@ from . import constants
 from . import run
 from . import times
 from . import typing_errors
+import safer
 
 PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
 BASH_PS = PROMPT.format(**vars(colors)), '> '
@@ -35,27 +36,30 @@ class CastRecorder:
         self.runner(self._callback, open(script))
         return self.cast
 
+    def record_to(self, script, target):
+        self.record(script)
+        with safer.writer(target) as fp:
+            self.cast.write(fp)
+
     def _callback(self, event, line):
         if event in (run.OUT, run.ERR):
             self._add(line.rstrip('\n'))
-            self._add(constants.RETURN)
+            self._add(constants.RETURN, self.key_times.times.to_print_one_line)
             self.chars += len(line)
             return
 
         if self.chars:
-            self.start_time -= self.key_times.to_read(self.chars)
-            self._add('')
+            self._add('', self.key_times.to_read(self.chars))
             self.chars = 0
 
         if event is run.IN:
             for k, t in self.key_times.to_type(line):
-                self.start_time -= t
-                self._add(k)
-
+                self._add(k, t)
         elif event is run.PROMPT:
             self._add(self.ps['12'.index(line[0])])
             self._add(constants.RETURN)
 
-    def _add(self, key):
+    def _add(self, key, delta_time=0):
         delta_time = (time.time() - self.start_time) - self.cast.duration
         self.cast.append(key, delta_time)
+        self.start_time -= delta_time

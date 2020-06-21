@@ -5,6 +5,7 @@ import asyncio
 import itertools
 import shlex
 import sys
+import typing
 import uuid
 
 MARKER = str(uuid.uuid4()) + '.'
@@ -14,12 +15,11 @@ ERR, OUT, IN, PROMPT, KILL = 'EOIPK'
 
 @dataclass
 class Runner:
-    execute: str
+    execute: typing.Union[str, list, tuple]
     set_prompts: str
     exit: str
 
     async def __call__(self, callback, commands, kill_after=None, shell=False):
-        self.callback = callback
         cmd = self.execute
         if shell:
             create = asyncio.create_subprocess_shell
@@ -46,22 +46,23 @@ class Runner:
 
         async def read_stdout():
             while line := await proc.stdout.readline():
-                callback(OUT, line.decode('utf8').rstrip('\n'))
+                callback(OUT, line.decode().rstrip('\n'))
 
         async def read_stderr():
             first_prompt = True
 
             while line := await proc.stderr.readline():
-                before, *after = line.decode('utf8').split(MARKER, maxsplit=1)
+                before, *after = line.decode().split(MARKER, maxsplit=1)
 
                 if after:
                     if first_prompt:
                         first_prompt = False
-                    elif before:
+                    elif before:  # pragma: no cover
                         callback(ERR, before)
                     callback(PROMPT, after[0].strip())
                     ready.set()
-                elif not first_prompt:
+
+                elif not first_prompt:  # pragma: no cover
                     callback(ERR, before.rstrip('\n'))
 
         async def write_stdin():
@@ -72,7 +73,7 @@ class Runner:
 
                 if command not in (self.set_prompts, self.exit):
                     callback(IN, command)
-                line = command.encode('utf8') + b'\n'
+                line = command.encode() + b'\n'
                 proc.stdin.write(line)
                 await proc.stdin.drain()
 
