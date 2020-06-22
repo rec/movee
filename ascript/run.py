@@ -19,8 +19,31 @@ class Runner:
     set_prompts: str
     exit: str
 
-    async def __call__(self, callback, commands, kill_after=None, shell=False):
-        cmd = self.execute
+    async def __call__(self, callback, commands, shell=False, kill_after=None):
+        pc = ProcCallback(self, callback, commands)
+        await pc.run(shell, kill_after)
+
+
+bash = Runner(
+    '/bin/bash -i', f'PS1="{MARKER}1\\n" ; PS2="{MARKER}2\\n"', 'exit'
+)
+python = Runner(
+    f'{sys.executable} -i',
+    f'import sys; sys.ps1 = "{MARKER}1\\n"; sys.ps2 = "{MARKER}2\\n"',
+    'quit()',
+)
+
+
+@dataclass
+class ProcCallback:
+    def __init__(self, runner, callback, commands):
+        self.runner = runner
+        self.callback = callback
+        self.commands = commands
+        self.ready = asyncio.Event()
+
+    async def run(self, shell, kill_after):
+        cmd = self.runner.execute
         if shell:
             create = asyncio.create_subprocess_shell
             if isinstance(cmd, str):
@@ -32,62 +55,52 @@ class Runner:
             if isinstance(cmd, str):
                 cmd = shlex.split(cmd)
 
-        ready = asyncio.Event()
-        ready.set()
+        self.proc = await create(*cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        self.killer = Waiter(kill_after and self._kill, kill_after)
+        self.killer.start()
 
-        proc = await create(*cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        await asyncio.gather(self._stdin(), self._stdout(), self._stderr())
 
-        def kill():
-            callback(KILL, '')
-            proc.kill()
+    async def _stdin(self):
+        cmds = itertools.chain(
+            [self.runner.set_prompts], self.commands, [self.runner.exit]
+        )
+        self.ready.set()
 
-        killer = Waiter(kill_after and kill, kill_after)
-        killer.start()
+        for command in cmds:
+            await self.ready.wait()
+            self.ready.clear()
 
-        async def read_stdout():
-            while line := await proc.stdout.readline():
-                callback(OUT, line.decode().rstrip('\n'))
+            if command not in (self.runner.set_prompts, self.runner.exit):
+                self.callback(IN, command)
+            line = command.encode() + b'\n'
+            self.proc.stdin.write(line)
+            await self.proc.stdin.drain()
 
-        async def read_stderr():
-            first_prompt = True
+        self.killer.stop()
+        self.proc.kill()
 
-            while line := await proc.stderr.readline():
-                before, *after = line.decode().split(MARKER, maxsplit=1)
+    async def _stdout(self):
+        while line := await self.proc.stdout.readline():
+            self.callback(OUT, line.decode().rstrip('\n'))
 
-                if after:
-                    if first_prompt:
-                        first_prompt = False
-                    elif before:  # pragma: no cover
-                        callback(ERR, before)
-                    callback(PROMPT, after[0].strip())
-                    ready.set()
+    async def _stderr(self):
+        first_prompt = True
 
-                elif not first_prompt:  # pragma: no cover
-                    callback(ERR, before.rstrip('\n'))
+        while line := await self.proc.stderr.readline():
+            before, *after = line.decode().split(MARKER, maxsplit=1)
 
-        async def write_stdin():
-            cmds = itertools.chain([self.set_prompts], commands, [self.exit])
-            for command in cmds:
-                await ready.wait()
-                ready.clear()
+            if after:
+                if first_prompt:
+                    first_prompt = False
+                elif before:  # pragma: no cover
+                    self.callback(ERR, before)
+                self.callback(PROMPT, after[0].strip())
+                self.ready.set()
 
-                if command not in (self.set_prompts, self.exit):
-                    callback(IN, command)
-                line = command.encode() + b'\n'
-                proc.stdin.write(line)
-                await proc.stdin.drain()
+            elif not first_prompt:  # pragma: no cover
+                self.callback(ERR, before.rstrip('\n'))
 
-            killer.stop()
-            proc.kill()
-
-        await asyncio.gather(read_stderr(), read_stdout(), write_stdin())
-
-
-bash = Runner(
-    '/bin/bash -i', f'PS1="{MARKER}1\\n" ; PS2="{MARKER}2\\n"', 'exit'
-)
-python = Runner(
-    f'{sys.executable} -i',
-    f'import sys; sys.ps1 = "{MARKER}1\\n"; sys.ps2 = "{MARKER}2\\n"',
-    'quit()',
-)
+    def _kill(self):
+        self.callback(KILL, '')
+        self.proc.kill()
