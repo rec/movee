@@ -2,7 +2,6 @@ from asyncio.subprocess import PIPE
 from dataclasses import dataclass
 from .waiter import Waiter
 import asyncio
-import itertools
 import shlex
 import sys
 import typing
@@ -41,8 +40,11 @@ class ProcCallback:
         self.callback = callback
         self.commands = commands
         self.ready = asyncio.Event()
+        self.ready = asyncio.Event()
+        self.running = False
 
     async def run(self, shell, kill_after):
+        self.running = True
         cmd = self.runner.execute
         if shell:
             create = asyncio.create_subprocess_shell
@@ -62,32 +64,32 @@ class ProcCallback:
         await asyncio.gather(self._stdin(), self._stdout(), self._stderr())
 
     async def _stdin(self):
-        cmds = itertools.chain(
-            [self.runner.set_prompts], self.commands, [self.runner.exit]
-        )
-        self.ready.set()
+        def write(command):
+            self.proc.stdin.write(command.encode() + b'\n')
 
-        for command in cmds:
+        write(self.runner.set_prompts)
+        for command in self.commands:
             await self.ready.wait()
             self.ready.clear()
 
-            if command not in (self.runner.set_prompts, self.runner.exit):
-                self.callback(IN, command)
-            line = command.encode() + b'\n'
-            self.proc.stdin.write(line)
-            await self.proc.stdin.drain()
+            self.callback(IN, command)
+            write(command)
 
+        await self.ready.wait()
+
+        self.running = False
         self.killer.stop()
-        self.proc.kill()
+        write(self.runner.exit)
+        await self.proc.stdin.drain()
 
     async def _stdout(self):
-        while line := await self.proc.stdout.readline():
+        while (line := await self.proc.stdout.readline()) and self.running:
             self.callback(OUT, line.decode().rstrip('\n'))
 
     async def _stderr(self):
         first_prompt = True
 
-        while line := await self.proc.stderr.readline():
+        while (line := await self.proc.stderr.readline()) and self.running:
             before, *after = line.decode().split(MARKER, maxsplit=1)
 
             if after:
@@ -104,3 +106,11 @@ class ProcCallback:
     def _kill(self):
         self.callback(KILL, '')
         self.proc.kill()
+        self.running = False
+
+
+if __name__ == '__main__':
+    import sys
+
+    lines = (i.rstrip() for i in open(sys.argv[1]))
+    asyncio.run(bash(print, lines))

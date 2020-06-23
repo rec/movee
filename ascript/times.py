@@ -32,10 +32,10 @@ class KeyTimes:
     def to_read(self, chars):
         return chars * self.times.to_read_one_char + self.times.after_read
 
-    def to_type(self, line):
+    def to_type(self, line, to_hash=None):
         yield '', self.times.before_typing
 
-        index = int(util.stable_hash(line)[:8], 16)
+        index = int(util.stable_hash(to_hash or line)[:8], 16)
         for char in line:
             index = (index + 1) % len(self.keystroke_times)
             time = self.keystroke_times[index]

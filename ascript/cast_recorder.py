@@ -17,7 +17,7 @@ class CastRecorder:
         self.errors = errors or typing_errors.ErrorMaker(0.08, 0.08, 0.08)
         self.key_times = key_times or times.KeyTimes()
 
-    def record(self, script):
+    async def record(self, script):
         if script.endswith('.py'):
             self.runner = run.python
             self.ps = PYTHON_PS
@@ -32,20 +32,20 @@ class CastRecorder:
         self.chars = 0
 
         self._add(constants.CONTROL_L)
-        self._add(self.prompt)
-        self.runner(self._callback, open(script))
+        self._add(self.ps[0])
+        await self.runner(self._callback, open(script))
         return self.cast
 
-    def record_to(self, script, target):
-        self.record(script)
+    async def record_to(self, script, target=None):
+        await self.record(script)
         with safer.writer(target) as fp:
             self.cast.write(fp)
 
     def _callback(self, event, line):
         if event in (run.OUT, run.ERR):
-            self._add(line.rstrip('\n'))
-            self._add(constants.RETURN, self.key_times.times.to_print_one_line)
             self.chars += len(line)
+            line = line.rstrip('\n') + constants.RETURN
+            self._add(line, self.key_times.times.to_print_one_line)
             return
 
         if self.chars:
@@ -53,7 +53,10 @@ class CastRecorder:
             self.chars = 0
 
         if event is run.IN:
-            for k, t in self.key_times.to_type(line):
+            with_errors = self.errors(line)
+            for k, t in self.key_times.to_type(with_errors, line):
+                if k == '\n':
+                    k = constants.RETURN
                 self._add(k, t)
         elif event is run.PROMPT:
             self._add(self.ps['12'.index(line[0])])

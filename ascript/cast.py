@@ -32,7 +32,11 @@ class Cast:
             raise ValueError('delta_time < 0')
         if delta_time < EPSILON:
             delta_time = 0
-        self.lines.append(Line(self.duration + delta_time, 'o', chars))
+        line = Line(self.duration + delta_time, 'o', chars)
+        if self.lines and not self.lines[-1].chars:
+            self.lines[-1] = line
+        else:
+            self.lines.append(line)
 
     def write(self, fp):
         print(json.dumps(self.header), file=fp)
