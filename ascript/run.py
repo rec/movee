@@ -94,15 +94,15 @@ class ProcessRunner:
             if after:
                 if first_prompt:
                     first_prompt = False
-                elif before:  # pragma: no cover
+                elif before:
                     self.callback(ERR, before)
                 self.callback(PROMPT, after[0].strip())
                 self.ready.set()
 
-            elif not first_prompt:  # pragma: no cover
+            elif not first_prompt:
                 self.callback(ERR, before.rstrip('\n'))
 
-    def _kill(self):  # pragma: no cover
+    def _kill(self):
         self.callback(KILL, '')
         self.proc.kill()
         self.running = False
