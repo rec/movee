@@ -46,15 +46,16 @@ class TestCast(TestCase):
         cast.extend(cast)
         assert not cast.lines
 
-        cast.extend(cast1)
-        cast.extend(cast, 2)
-        cast.extend(cast, 4)
+    def test_append_time_zero(self):
+        cast = Cast()
+        cast.append('ls -cail', 1)
+        cast.append('', 2.5)
+        cast.append(' frog', 0.5)
+
         _round_trip(cast)
         expected = [
             [1, 'o', 'ls -cail'],
-            [4, 'o', 'ls -cail'],
-            [9, 'o', 'ls -cail'],
-            [12, 'o', 'ls -cail'],
+            [4, 'o', ' frog'],
         ]
         assert [i.to_list() for i in cast.lines] == expected
 
