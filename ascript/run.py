@@ -102,7 +102,7 @@ class ProcessRunner:
             elif not first_prompt:  # pragma: no cover
                 self.callback(ERR, before.rstrip('\n'))
 
-    def _kill(self):
+    def _kill(self):  # pragma: no cover
         self.callback(KILL, '')
         self.proc.kill()
         self.running = False

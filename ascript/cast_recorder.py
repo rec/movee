@@ -7,8 +7,8 @@ from . import times
 from . import typing_errors
 import safer
 
-PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
-BASH_PS = PROMPT.format(**vars(colors)), '> '
+_PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
+BASH_PS = _PROMPT.format(**vars(colors)), '> '
 PYTHON_PS = '>>> ', '... '
 
 

@@ -20,6 +20,10 @@ class Cast:
 
     @classmethod
     def read(cls, fp):
+        if isinstance(fp, str):
+            with open(fp) as fp2:
+                return cls.read(fp2)
+
         header, *lines = (json.loads(i) for i in fp)
         return cls([Line(*i) for i in lines], header)
 

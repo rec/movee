@@ -6,7 +6,7 @@
   omit = ascript/keystrokes.py
 
 [report]
-  fail_under = 87
+  fail_under = 98
   skip_covered = True
 
   exclude_lines =
