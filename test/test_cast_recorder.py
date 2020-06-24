@@ -9,7 +9,7 @@ import tdir
 
 @skip_if_travis
 class TestCastRecorder(IsolatedAsyncioTestCase):
-    async def test_empty(self):
+    async def test_bash(self):
         with tdir.tdir({'test.sh': 'echo HELLO\npwd\n'}):
             await CastRecorder().record_to('test.sh', 'test.cast')
             actual = [i.chars for i in Cast.read('test.cast').lines]
@@ -45,3 +45,80 @@ class TestCastRecorder(IsolatedAsyncioTestCase):
             if actual != expected:
                 print(*actual, sep='\n')
             assert actual == expected
+
+    async def test_record_python(self):
+        with tdir.tdir({'test.py': TEST_PY}):
+            await CastRecorder().record_to('test.py', 'test.cast')
+            actual = [i.chars for i in Cast.read('test.cast').lines]
+            expected = [
+                '\x1b[H\x1b[2J',
+                '>>> ',
+                '\r\n',
+                'p',
+                'r',
+                'i',
+                'n',
+                't',
+                '9',
+                constants.BACKSPACE,
+                '(',
+                "'",
+                'h',
+                'e',
+                'l',
+                'l',
+                'o',
+                "'",
+                '0',
+                constants.BACKSPACE,
+                ')',
+                '\r\n',
+                'hello\r\n',
+                '>>> ',
+                'i',
+                'm',
+                'p',
+                'o',
+                'r',
+                'T',
+                constants.BACKSPACE,
+                't',
+                ' ',
+                'o',
+                's',
+                '\r\n',
+                '>>> ',
+                'O',
+                constants.BACKSPACE,
+                'o',
+                's',
+                '.',
+                'g',
+                'e',
+                't',
+                'c',
+                's',
+                constants.BACKSPACE,
+                'w',
+                'd',
+                '(',
+                ')',
+                '\r\n',
+                "'%s'\r\n" % os.getcwd(),
+                '>>> ',
+            ]
+            if actual != expected:
+                print(*actual, sep='\n')
+            assert actual == expected
+
+    async def test_error(self):
+        with self.assertRaises(ValueError) as m:
+            await CastRecorder().record_to('test.xx', 'test.cast')
+        assert m.exception.args[0] == 'Do not understand script test.xx'
+
+
+TEST_PY = """
+print('hello')
+import os
+os.getcwd()
+"""
