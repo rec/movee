@@ -48,7 +48,7 @@ async def record_and_compare(count=4):
 
 
 if __name__ == '__main__':
-    if False:
+    if not False:
         asyncio.run(CastRecorder().record_to(*sys.argv[1:]))
     else:
         asyncio.run(record_and_compare())

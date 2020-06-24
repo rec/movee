@@ -19,8 +19,7 @@ class Runner:
     exit: str
 
     async def __call__(self, callback, commands, shell=False, kill_after=None):
-        pc = ProcCallback(self, callback, commands)
-        await pc.run(shell, kill_after)
+        await ProcessRunner(self, callback, commands).run(shell, kill_after)
 
 
 bash = Runner(
@@ -34,12 +33,11 @@ python = Runner(
 
 
 @dataclass
-class ProcCallback:
+class ProcessRunner:
     def __init__(self, runner, callback, commands):
         self.runner = runner
         self.callback = callback
         self.commands = commands
-        self.ready = asyncio.Event()
         self.ready = asyncio.Event()
         self.running = False
 
@@ -65,14 +63,13 @@ class ProcCallback:
 
     async def _stdin(self):
         def write(command):
-            self.proc.stdin.write(command.encode() + b'\n')
+            self.proc.stdin.write(command.rstrip().encode() + b'\n')
 
         write(self.runner.set_prompts)
         for command in self.commands:
             await self.ready.wait()
             if command.split('#')[0].strip():
-                # TODO: The test fails for blank lines and comments in long
-                # string constants.
+                # TODO: fails for multiline strings with blank lines/comments
                 write(command)
                 self.ready.clear()
             self.callback(IN, command)
@@ -114,5 +111,4 @@ class ProcCallback:
 if __name__ == '__main__':
     import sys
 
-    lines = (i.rstrip() for i in open(sys.argv[1]))
-    asyncio.run(bash(print, lines))
+    asyncio.run(bash(print, open(sys.argv[1])))
