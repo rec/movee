@@ -32,7 +32,6 @@ class CastRecorder:
         self.chars = 0
 
         self._add(constants.CONTROL_L)
-        self._add(self.ps[0])
         await self.runner(self._callback, open(script))
         return self.cast
 
@@ -60,7 +59,6 @@ class CastRecorder:
                 self._add(k, t)
         elif event is run.PROMPT:
             self._add(self.ps['12'.index(line[0])])
-            self._add(constants.RETURN)
 
     def _add(self, key, delta_time=0):
         delta_time = (time.time() - self.start_time) - self.cast.duration
