@@ -70,10 +70,12 @@ class ProcCallback:
         write(self.runner.set_prompts)
         for command in self.commands:
             await self.ready.wait()
-            self.ready.clear()
-
+            if command.split('#')[0].strip():
+                # TODO: The test fails for blank lines and comments in long
+                # string constants.
+                write(command)
+                self.ready.clear()
             self.callback(IN, command)
-            write(command)
 
         await self.ready.wait()
 
