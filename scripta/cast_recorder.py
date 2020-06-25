@@ -1,4 +1,4 @@
-from . import colors
+from . import prompt
 from . import constants
 from . import run
 from . import times
@@ -8,7 +8,7 @@ import safer
 import time
 
 _PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
-BASH_PS = _PROMPT.format(**vars(colors)), '> '
+BASH_PS = _PROMPT.format(**vars(prompt)), '> '
 PYTHON_PS = '>>> ', '... '
 
 

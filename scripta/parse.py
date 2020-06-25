@@ -32,3 +32,4 @@ _UPLOAD_HELP = """Upload the cast file to asciinema.com"""
 _VERBOSE_HELP = """Print more stuff"""
 
 TEMPLATE = 'solarized_light'
+PROMPT = '▶ {BLUE}{USER}{RED}:{GREEN}{CWD}{NONE}$ '
