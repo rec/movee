@@ -3,7 +3,7 @@ Takes a text and then adds a certain percentage of typing errors to it
 using a crude model based on the layout of a standard keyboard.
 """
 from . import constants
-from . import util
+from .stable_hash import stable_hash
 from dataclasses import dataclass
 import random
 
@@ -21,7 +21,7 @@ class ErrorMaker:
 
     def __call__(self, line):
         rstate = random.getstate()
-        random.seed(util.stable_hash(line))
+        random.seed(stable_hash(line))
 
         try:
             for key in line:

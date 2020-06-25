@@ -1,4 +1,4 @@
-from . import util
+from .stable_hash import stable_hash
 from dataclasses import dataclass
 
 
@@ -35,7 +35,7 @@ class KeyTimes:
     def to_type(self, line, to_hash=None):
         yield '', self.times.before_typing
 
-        index = int(util.stable_hash(to_hash or line)[:8], 16)
+        index = int(stable_hash(to_hash or line)[:8], 16)
         for char in line:
             index = (index + 1) % len(self.keystroke_times)
             time = self.keystroke_times[index]

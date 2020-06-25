@@ -1,4 +1,4 @@
-from . import util
+from .stable_hash import stable_hash
 from pathlib import Path
 import json
 import subprocess
@@ -7,7 +7,7 @@ import subprocess
 def upload(cast_file, suffix='.cache'):
     f = Path(cast_file)
 
-    id = util.stable_hash(f.read_bytes())
+    id = stable_hash(f.read_bytes())
     cache_file = (f.parent / ('.' + f.stem)).with_suffix(f.suffix + suffix)
 
     if cache_file.exists():

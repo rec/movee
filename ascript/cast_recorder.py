@@ -60,6 +60,9 @@ class CastRecorder:
         elif event is run.PROMPT:
             self._add(self.ps['12'.index(line[0])])
 
+        else:  # pragma: no cover
+            pass
+
     def _add(self, key, delta_time=0):
         delta_time = (time.time() - self.start_time) - self.cast.duration
         self.cast.append(key, delta_time)
