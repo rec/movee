@@ -7,8 +7,7 @@ from .cast import Cast
 import safer
 import time
 
-_PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
-BASH_PS = _PROMPT.format(**vars(prompt)), '> '
+BASH_PS = prompt.expand(), '> '
 PYTHON_PS = '>>> ', '... '
 
 

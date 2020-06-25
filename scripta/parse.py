@@ -1,3 +1,4 @@
+from .prompt import DEFAULT_PROMPT
 import argparse
 
 
@@ -7,7 +8,7 @@ def parse(args=None):
     p.add_argument('scripts', nargs='+', help=_SCRIPTS_HELP)
     p.add_argument('--columns', '-c', default=100, help=_COLUMNS_HELP)
     p.add_argument('--output', '-o', help=_OUTPUT_HELP)
-    p.add_argument('--prompt', '-p', help=_PROMPT_HELP)
+    p.add_argument('--prompt', '-p', default=DEFAULT_PROMPT, help=_PROMPT_HELP)
     p.add_argument('--rows', '-r', default=100, help=_ROWS_HELP)
     p.add_argument('--svg', '-s', default='', nargs='?', help=_SVG_HELP)
     p.add_argument('--template', '-t', default=TEMPLATE, help=_TEMPLATE_HELP)
@@ -32,4 +33,3 @@ _UPLOAD_HELP = """Upload the cast file to asciinema.com"""
 _VERBOSE_HELP = """Print more stuff"""
 
 TEMPLATE = 'solarized_light'
-PROMPT = '▶ {BLUE}{USER}{RED}:{GREEN}{CWD}{NONE}$ '

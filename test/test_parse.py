@@ -1,4 +1,5 @@
 from scripta import parse
+from scripta.prompt import DEFAULT_PROMPT
 from unittest import TestCase
 
 
@@ -8,7 +9,7 @@ class MainTest(TestCase):
         expected = {
             'columns': 100,
             'output': None,
-            'prompt': None,
+            'prompt': DEFAULT_PROMPT,
             'rows': 100,
             'scripts': ['foo'],
             'svg': '',
