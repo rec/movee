@@ -45,6 +45,7 @@ class Cast:
     def write(self, fp):
         print(json.dumps(self.header), file=fp)
         for line in self.lines:
+            print('XXX', line.to_list())
             print(json.dumps(line.to_list()), file=fp)
 
     def scale_by(self, ratio):

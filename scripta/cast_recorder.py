@@ -12,19 +12,22 @@ PYTHON_PS = '>>> ', '... '
 
 
 class CastRecorder:
-    def __init__(self, errors=None, key_times=None):
+    def __init__(self, errors=None, key_times=None, prompt=None):
         self.errors = errors or typing_errors.ErrorMaker(0.08, 0.08, 0.08)
         self.key_times = key_times or times.KeyTimes()
+        self.prompt = prompt
 
     async def record(self, script):
         if script.endswith('.py'):
             self.runner = run.python
             self.ps = PYTHON_PS
         else:
-            self.runner = run.bash
-            if not script.endswith('.sh'):
+            if not any(script.endswith(s) for s in ('.sh', '.bash')):
                 raise ValueError('Do not understand script %s' % script)
-            self.ps = BASH_PS
+            self.runner = run.bash
+            self.ps = list(BASH_PS)
+            if self.prompt:
+                self.ps[0] = self.prompt
 
         self.cast = Cast()
         self.start_time = time.time()

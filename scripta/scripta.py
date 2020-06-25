@@ -3,6 +3,17 @@ import asyncio
 
 
 def scripta(
-    scripts, columns, output, prompt, rows, svg, template, upload, verbose
+    scripts,
+    columns,
+    errors,
+    key,
+    output,
+    prompt,
+    rows,
+    svg,
+    theme,
+    times,
+    upload,
+    verbose,
 ):
     asyncio.run(CastRecorder().record_to(*scripts))

@@ -1,19 +1,21 @@
 from scripta import parse
-from scripta.prompt import DEFAULT_PROMPT
 from unittest import TestCase
 
 
-class MainTest(TestCase):
-    def test_main(self):
+class ParseTest(TestCase):
+    def test_parse(self):
         actual = vars(parse.parse(['foo']))
         expected = {
-            'columns': 100,
+            'columns': None,
+            'errors': None,
+            'keys': None,
             'output': None,
-            'prompt': DEFAULT_PROMPT,
-            'rows': 100,
+            'prompt': None,
+            'rows': None,
             'scripts': ['foo'],
             'svg': '',
-            'template': 'solarized_light',
+            'theme': None,
+            'times': None,
             'upload': False,
             'verbose': False,
         }
