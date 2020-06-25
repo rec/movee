@@ -1,11 +1,11 @@
-import time
-from .cast import Cast
 from . import colors
 from . import constants
 from . import run
 from . import times
 from . import typing_errors
+from .cast import Cast
 import safer
+import time
 
 _PROMPT = '▶ {BLUE}tom{RED}:{GREEN}/code/test{NONE}$ '
 BASH_PS = _PROMPT.format(**vars(colors)), '> '

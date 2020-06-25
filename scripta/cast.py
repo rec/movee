@@ -2,8 +2,8 @@
 Represents a single asciinema file for reading or writing
 """
 
-from .line import Line
 from . import constants
+from .line import Line
 import json
 
 EPSILON = 0.001

@@ -1,6 +1,6 @@
+from scripta import constants
 from scripta.typing_errors import ErrorMaker
 from unittest import TestCase
-from scripta import constants
 
 
 class ErrorAdderTest(TestCase):

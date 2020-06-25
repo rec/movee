@@ -1,6 +1,6 @@
+from .waiter import Waiter
 from asyncio.subprocess import PIPE
 from dataclasses import dataclass
-from .waiter import Waiter
 import asyncio
 import shlex
 import sys

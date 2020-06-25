@@ -1,7 +1,7 @@
+from pathlib import Path
 from scripta.cast import Cast, EPSILON
 from unittest import TestCase
 import io
-from pathlib import Path
 
 TEST_CAST_FILE = Path(__file__).parents[1] / 'data/recorded/git-copy.cast'
 

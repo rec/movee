@@ -1,8 +1,8 @@
-from scripta.cast_recorder import CastRecorder, BASH_PS
-from scripta.cast import Cast
-from scripta import constants
-from unittest import IsolatedAsyncioTestCase
 from .travis import skip_if_travis
+from scripta import constants
+from scripta.cast import Cast
+from scripta.cast_recorder import CastRecorder, BASH_PS
+from unittest import IsolatedAsyncioTestCase
 import os
 import tdir
 

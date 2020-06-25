@@ -1,5 +1,5 @@
-from scripta import upload
 from pathlib import Path
+from scripta import upload
 from unittest import TestCase
 from unittest import mock
 import tdir
