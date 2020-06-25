@@ -1,13 +1,14 @@
-from scripta import __main__
+from scripta import parse
 from unittest import TestCase
 
 
 class MainTest(TestCase):
     def test_main(self):
-        actual = vars(__main__.parse(['foo']))
+        actual = vars(parse.parse(['foo']))
         expected = {
             'columns': 100,
             'output': None,
+            'prompt': None,
             'rows': 100,
             'scripts': ['foo'],
             'svg': '',
