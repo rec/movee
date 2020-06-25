@@ -1,4 +1,4 @@
-from ascript.times import KeyTimes
+from scripta.times import KeyTimes
 from unittest import TestCase
 
 

@@ -1,6 +1,6 @@
 import asyncio
 import sys
-from ascript.cast_recorder import CastRecorder
+from scripta.cast_recorder import CastRecorder
 
 
 async def record_and_compare(count=4):

@@ -1,5 +1,5 @@
 from .travis import skip_if_travis
-from ascript import run
+from scripta import run
 import asyncio
 import unittest
 

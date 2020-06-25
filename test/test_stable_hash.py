@@ -1,4 +1,4 @@
-from ascript.stable_hash import stable_hash
+from scripta.stable_hash import stable_hash
 from unittest import TestCase
 
 

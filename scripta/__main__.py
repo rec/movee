@@ -8,7 +8,7 @@ USAGE
 
 .. code-block:: bash
 
-    ascript my_file.py [castfile]
+    scripta my_file.py [castfile]
 
 """
 import asyncio

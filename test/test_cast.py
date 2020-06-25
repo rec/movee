@@ -1,4 +1,4 @@
-from ascript.cast import Cast, EPSILON
+from scripta.cast import Cast, EPSILON
 from unittest import TestCase
 import io
 from pathlib import Path

@@ -2,8 +2,7 @@
 
 [run]
   branch = True
-  source = ascript/
-  omit = ascript/keystrokes.py
+  source = scripta/
 
 [report]
   fail_under = 97

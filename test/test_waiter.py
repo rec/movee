@@ -1,4 +1,4 @@
-from ascript.waiter import Waiter
+from scripta.waiter import Waiter
 from .travis import IS_TRAVIS
 from unittest import TestCase
 import time

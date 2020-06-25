@@ -1,6 +1,6 @@
-from ascript.cast_recorder import CastRecorder, BASH_PS
-from ascript.cast import Cast
-from ascript import constants
+from scripta.cast_recorder import CastRecorder, BASH_PS
+from scripta.cast import Cast
+from scripta import constants
 from unittest import IsolatedAsyncioTestCase
 from .travis import skip_if_travis
 import os
