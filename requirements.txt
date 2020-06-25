@@ -1,4 +1,3 @@
 dataclasses
 safer
-sproc
 termtosvg

@@ -1,27 +1,28 @@
-import hashlib
+from . import util
+from pathlib import Path
 import json
-import sproc
-import webbrowser
+import subprocess
 
 
-def upload(cast_file, json_file):
-    m = hashlib.sha256()
-    m.update(cast_file.read_bytes())
-    sha = m.hexdigest()
+def upload(cast_file, suffix='.cache'):
+    f = Path(cast_file)
 
-    if json_file.exists():
-        new_sha, url = json.loads(json_file.read_text())
-        if new_sha == sha:
-            return url
+    id = util.stable_hash(f.read_bytes())
+    cache_file = (f.parent / ('.' + f.stem)).with_suffix(f.suffix + suffix)
 
-    sproc.sproc('asciinema', 'upload', str(cast_file))
+    if cache_file.exists():
+        new_id, url = json.loads(cache_file.read_text())
+        if new_id == id:
+            return url, False
 
-    lines = []
-    url = next(i for i in lines if 'https://' in i).strip()
-    json_file.write_text(json.dumps([sha, url]))
-    webbrowser.open(url, new=0, autoraise=True)
-    print(MESSAGE.format(url=url))
-    return url
+    lines = _call('asciinema', 'upload', str(cast_file))
+    urls = {i.strip() for i in lines if 'https://' in i}
+    if len(urls) != 1:
+        raise ValueError('Failed to upload, error is \n%s' + '\n'.join(lines))
+    cache_file.write_text(json.dumps([id, url := urls.pop()]))
+    return url, True
 
 
-MESSAGE = """New upload {url}!"""
+def _call(*cmd):  # pragma: no cover
+    with subprocess.Popen(cmd, encoding='utf8', stdout=subprocess.PIPE) as po:
+        return po.communicate()[0].splitlines()

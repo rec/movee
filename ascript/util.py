@@ -2,4 +2,6 @@ import hashlib
 
 
 def stable_hash(s):
-    return hashlib.blake2s(s.encode()).hexdigest()
+    if isinstance(s, str):
+        s = s.encode()
+    return hashlib.blake2s(s).hexdigest()
