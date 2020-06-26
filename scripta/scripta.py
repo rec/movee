@@ -16,4 +16,5 @@ def scripta(
     upload,
     verbose,
 ):
-    asyncio.run(CastRecorder().record_to(*scripts))
+    source, target = scripts
+    asyncio.run(CastRecorder(source).record_to(target))

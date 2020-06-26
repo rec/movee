@@ -5,7 +5,7 @@
   source = scripta/
 
 [report]
-  fail_under = 97
+  fail_under = 95
   skip_covered = True
 
   exclude_lines =

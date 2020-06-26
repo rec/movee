@@ -4,7 +4,7 @@ import argparse
 def _parser():
     p = argparse.ArgumentParser(description=_DESCRIPTION)
 
-    p.add_argument('scripts', nargs='+', help=_SCRIPTS_HELP)
+    p.add_argument('sources', nargs='+', help=_SOURCES_HELP)
     p.add_argument('--columns', '-c', help=_COLUMNS_HELP)
     p.add_argument('--errors', '-e', help=_ERRORS_HELP)
     p.add_argument('--keys', '-k', help=_KEYS_HELP)
@@ -16,6 +16,7 @@ def _parser():
     p.add_argument('--times', '-t', help=_TIMES_HELP)
     p.add_argument('--upload', '-u', action='store_true', help=_UPLOAD_HELP)
     p.add_argument('--verbose', '-v', action='store_true', help=_VERBOSE_HELP)
+
     return p
 
 
@@ -31,7 +32,7 @@ _KEYS_HELP = """A list of cast files from which to get key timing"""
 _OUTPUT_HELP = """Directory for output cast files"""
 _PROMPT_HELP = """Set the main bash prompt"""
 _ROWS_HELP = """Rows of the terminal in characters"""
-_SCRIPTS_HELP = """Scripts to run"""
+_SOURCES_HELP = """Sources to run, either config files or scripts"""
 _THEME_HELP = """Name of asciinema theme"""
 _TIMES_HELP = """Set timing parameters"""
 _UPLOAD_HELP = """Upload the cast file to asciinema.com"""

@@ -11,7 +11,7 @@ import tdir
 class TestCastRecorder(IsolatedAsyncioTestCase):
     async def test_bash(self):
         with tdir.tdir({'test.sh': 'echo HELLO\npwd\n'}):
-            await CastRecorder().record_to('test.sh', 'test.cast')
+            await CastRecorder('test.sh').record_to('test.cast')
             actual = [i.chars for i in Cast.read('test.cast').lines]
             expected = [
                 constants.CONTROL_L,
@@ -48,7 +48,7 @@ class TestCastRecorder(IsolatedAsyncioTestCase):
 
     async def test_record_python(self):
         with tdir.tdir({'test.py': TEST_PY}):
-            await CastRecorder().record_to('test.py', 'test.cast')
+            await CastRecorder('test.py').record_to('test.cast')
             actual = [i.chars for i in Cast.read('test.cast').lines]
             expected = [
                 '\x1b[H\x1b[2J',
@@ -113,7 +113,7 @@ class TestCastRecorder(IsolatedAsyncioTestCase):
 
     async def test_error(self):
         with self.assertRaises(ValueError) as m:
-            await CastRecorder().record_to('test.xx', 'test.cast')
+            await CastRecorder('test.xx').record_to('test.cast')
         assert m.exception.args[0] == 'Do not understand script test.xx'
 
 

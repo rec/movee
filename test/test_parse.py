@@ -12,7 +12,7 @@ class ParseTest(TestCase):
             'output': None,
             'prompt': None,
             'rows': None,
-            'scripts': ['foo'],
+            'sources': ['foo'],
             'svg': '',
             'theme': None,
             'times': None,
