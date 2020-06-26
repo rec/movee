@@ -91,6 +91,18 @@ expected the node content, but found '}'
             configs.to_config({'sources': ['s.py'], 'frog': 'toad'})
         assert m.exception.args[0] == 'Invalid for config: frog\n'
 
+    def test_errors6(self):
+        flags = vars(parse.parse('s.py [] --svg=ph/'.split()))
+
+        with self.assertRaises(TypeError) as m:
+            configs.to_config(flags)
+        assert m.exception.args[0] == 'Expected str or dict'
+
+    def test_errors7(self):
+        with self.assertRaises(TypeError) as m:
+            configs.to_config([[]])
+        assert m.exception.args[0] == 'Expected str or dict'
+
 
 EMPTY = {
     'columns': None,

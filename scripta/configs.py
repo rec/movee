@@ -47,7 +47,10 @@ def to_config(flags):
 
         if route is None:
             try:
-                return yaml.safe_load(data)
+                cfg = yaml.safe_load(data)
+                if not isinstance(cfg, dict):
+                    raise TypeError('Expected str or dict')
+                return cfg
             except yaml.parser.ParserError as e:
                 route = exceptions
                 id = f'{id}: {e}'
