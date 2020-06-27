@@ -1,4 +1,4 @@
-from . import configs
+from . import config
 from . import parse
 from . import scripta
 import sys
@@ -7,10 +7,10 @@ import traceback
 
 def main(args=None):  # pragma: no cover
     flags = parse.parse(args)
-    config = configs.to_config(vars(flags))
+    cfg = config.to_config(vars(flags))
 
     try:
-        scripta.scripta(**config)
+        scripta.scripta(**cfg)
         return 0
     except Exception as e:
         print('ERROR:', e, file=sys.stderr)
