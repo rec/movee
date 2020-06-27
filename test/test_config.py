@@ -105,11 +105,11 @@ expected the node content, but found '}'
 
 
 EMPTY = {
+    'cast': None,
     'dry_run': False,
     'errors': None,
     'height': None,
     'keys': None,
-    'output': None,
     'prompt': None,
     'sources': None,
     'svg': None,

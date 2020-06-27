@@ -6,11 +6,11 @@ def _parser():
 
     p.add_argument('sources', nargs='+', help=_SOURCES_HELP)
 
+    p.add_argument('--cast', '-c', help=_CAST_HELP)
     p.add_argument('--dry-run', '-d', action='store_true', help=_DRY_RUN_HELP)
     p.add_argument('--errors', '-e', help=_ERRORS_HELP)
     p.add_argument('--height', '-i', help=_HEIGHT_HELP)
     p.add_argument('--keys', '-k', help=_KEYS_HELP)
-    p.add_argument('--output', '-o', help=_OUTPUT_HELP)
     p.add_argument('--prompt', '-p', help=_PROMPT_HELP)
     p.add_argument('--svg', '-s', default='', nargs='?', help=_SVG_HELP)
     p.add_argument('--theme', '-m', help=_THEME_HELP)
@@ -32,7 +32,7 @@ _WIDTH_HELP = """Width of the terminal in characters"""
 _DRY_RUN_HELP = """Do not run, dump config file to stdout"""
 _ERRORS_HELP = """Set error parameters"""
 _KEYS_HELP = """A list of cast files from which to get key timing"""
-_OUTPUT_HELP = """Directory for output cast files"""
+_CAST_HELP = """Directory for cast files"""
 _PROMPT_HELP = """Set the main bash prompt"""
 _HEIGHT_HELP = """Height of the terminal in characters"""
 _SOURCES_HELP = """Sources to run, either config files or scripts"""
