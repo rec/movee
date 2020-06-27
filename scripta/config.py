@@ -1,5 +1,6 @@
 from . import parse
 from pathlib import Path
+from argparse import Namespace
 import yaml
 
 CONFIG_SUFFIXES = {'.yml', '.yaml', '.json'}
@@ -9,7 +10,9 @@ CONFIG_KEYS = {a.dest for a in parse.PARSER._actions}
 # THEME = 'solarized_light'
 
 
-def to_config(flags):
+def read_config(args):
+    flags = vars(args) if isinstance(args, Namespace) else args
+
     if isinstance(flags, dict):
         sources = flags.pop('sources', [])
     else:
@@ -82,4 +85,4 @@ def to_config(flags):
 
     if unknown_keys := set(config) - CONFIG_KEYS:
         raise ValueError('Invalid for config: %s\n' % ' ,'.join(unknown_keys))
-    return config
+    return Namespace(**config)
