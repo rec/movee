@@ -15,9 +15,9 @@ KEYCHART = [
 
 @dataclass
 class ErrorMaker:
-    shift: float = 0
-    row: float = 0
-    column: float = 0
+    row: float = 0.03
+    column: float = 0.03
+    shift: float = 0.02
 
     def __call__(self, line):
         rstate = random.getstate()

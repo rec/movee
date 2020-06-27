@@ -6,7 +6,7 @@ from unittest import TestCase
 class ErrorAdderTest(TestCase):
     def test_empty(self):
         before = 'some long complicated string etc'
-        after = ''.join(ErrorMaker()(before))
+        after = ''.join(ErrorMaker(0, 0, 0)(before))
         assert before == after
 
     def test_complete(self):
@@ -18,7 +18,7 @@ class ErrorAdderTest(TestCase):
 
     def test_longer(self):
         before = 'a much longer sentence with errors'
-        after = ErrorMaker(0.03, 0.08, 0.09)(before)
+        after = ErrorMaker(0.08, 0.09, 0.03)(before)
         actual = ''.join(after).split(constants.BACKSPACE)
         expected = [
             'a much longr',
