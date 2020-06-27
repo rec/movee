@@ -5,6 +5,8 @@ def _parser():
     p = argparse.ArgumentParser(description=_DESCRIPTION)
 
     p.add_argument('sources', nargs='+', help=_SOURCES_HELP)
+
+    p.add_argument('--dry-run', '-d', action='store_true', help=_DRY_RUN_HELP)
     p.add_argument('--errors', '-e', help=_ERRORS_HELP)
     p.add_argument('--height', '-i', help=_HEIGHT_HELP)
     p.add_argument('--keys', '-k', help=_KEYS_HELP)
@@ -27,6 +29,7 @@ Render casts as SVG files if set.  If a value is given, it is the name of the
 directory for SVG files."""
 
 _WIDTH_HELP = """Width of the terminal in characters"""
+_DRY_RUN_HELP = """Do not run, dump config file to stdout"""
 _ERRORS_HELP = """Set error parameters"""
 _KEYS_HELP = """A list of cast files from which to get key timing"""
 _OUTPUT_HELP = """Directory for output cast files"""

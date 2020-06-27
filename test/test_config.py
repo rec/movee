@@ -105,16 +105,17 @@ expected the node content, but found '}'
 
 
 EMPTY = {
-    'width': None,
+    'dry_run': False,
     'errors': None,
+    'height': None,
     'keys': None,
     'output': None,
     'prompt': None,
-    'height': None,
     'sources': None,
     'svg': None,
     'theme': None,
     'times': None,
     'upload': False,
     'verbose': False,
+    'width': None,
 }

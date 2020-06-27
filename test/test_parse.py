@@ -6,17 +6,18 @@ class ParseTest(TestCase):
     def test_parse(self):
         actual = vars(parse.parse(['foo']))
         expected = {
-            'width': None,
+            'dry_run': False,
             'errors': None,
+            'height': None,
             'keys': None,
             'output': None,
             'prompt': None,
-            'height': None,
             'sources': ['foo'],
             'svg': '',
             'theme': None,
             'times': None,
             'upload': False,
             'verbose': False,
+            'width': None,
         }
         assert actual == expected

@@ -1,5 +1,5 @@
-from . import prompt
 from . import constants
+from . import prompt
 from . import run
 from . import times
 from . import typing_errors

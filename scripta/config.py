@@ -1,6 +1,6 @@
 from . import parse
-from pathlib import Path
 from argparse import Namespace
+from pathlib import Path
 import yaml
 
 CONFIG_SUFFIXES = {'.yml', '.yaml', '.json'}
