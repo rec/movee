@@ -12,10 +12,8 @@ COMPOUND_KEYS = {constants.BACKSPACE, constants.RETURN}
 
 
 class Cast:
-    def __init__(self, lines=None, header=None):
-        self.header = dict(HEADER)
-        if header:
-            self.header.update(header)
+    def __init__(self, lines=None, **kwargs):
+        self.header = dict(HEADER, **kwargs)
         self.lines = lines or []
 
     @classmethod
@@ -25,7 +23,7 @@ class Cast:
                 return cls.read(fp2)
 
         header, *lines = (json.loads(i) for i in fp)
-        return cls([Line(*i) for i in lines], header)
+        return cls([Line(*i) for i in lines], **header)
 
     @property
     def duration(self):

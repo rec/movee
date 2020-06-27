@@ -3,18 +3,18 @@ import asyncio
 
 
 def scripta(
-    scripts,
-    columns,
     errors,
+    height,
     key,
     output,
     prompt,
-    rows,
+    sources,
     svg,
     theme,
     times,
     upload,
     verbose,
+    width,
 ):
-    source, target = scripts
+    source, target = sources
     asyncio.run(CastRecorder(source).record_to(target))

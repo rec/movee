@@ -11,7 +11,7 @@ SOURCES = ['c1.yml', 's.py', 'c2.yml', '{sources: [s.sh]}']
     's.sh',
     's.junk',
     {
-        'c1.yml': '{columns: 100, upload: true}',
+        'c1.yml': '{width: 100, upload: true}',
         'c2.yml': '{verbose: True}',
         'c3.yml': '{svg: wombat}',
     },
@@ -21,7 +21,7 @@ class ConfigsTest(TestCase):
         for sources in (SOURCES, {'sources': SOURCES}):
             actual = configs.to_config(sources)
             expected = {
-                'columns': 100,
+                'width': 100,
                 'sources': ['s.py', 's.sh'],
                 'upload': True,
                 'verbose': True,
@@ -105,12 +105,12 @@ expected the node content, but found '}'
 
 
 EMPTY = {
-    'columns': None,
+    'width': None,
     'errors': None,
     'keys': None,
     'output': None,
     'prompt': None,
-    'rows': None,
+    'height': None,
     'sources': None,
     'svg': None,
     'theme': None,
