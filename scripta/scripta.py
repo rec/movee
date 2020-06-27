@@ -1,20 +1,11 @@
 from .cast_recorder import CastRecorder
 import asyncio
 
+# from .typing_errors import ErrorMaker
+# from pathlib import Path
+# import termtosvg.config
+# import yaml
 
-def scripta(
-    errors,
-    height,
-    key,
-    output,
-    prompt,
-    sources,
-    svg,
-    theme,
-    times,
-    upload,
-    verbose,
-    width,
-):
-    source, target = sources
-    asyncio.run(CastRecorder(source).record_to(target))
+
+def scripta(config):
+    return CastRecorder, asyncio
