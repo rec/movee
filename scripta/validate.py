@@ -4,26 +4,29 @@ from .times import Times
 from .typing_errors import ErrorMaker
 from numbers import Number
 from pathlib import Path
+import functools
 import termtosvg.config
 import yaml
 
 ASCIINEMA_DECIMALS = 6
 
 
-def validate(cfg, raise_errors=True):
+def validate(cfg):
     errors = []
     for k, v in cfg.items():
         if f := VALIDATORS.get(k):
             try:
                 v2 = f(k, v)
             except Exception as e:
-                if raise_errors:
-                    raise
+                if not errors:
+                    last_call = functools.partial(f, k, v)
                 errors.append(f'{k}: {e}\n')
             else:
                 cfg[k] = v if v2 is None else v2
 
-    if errors:
+    if len(errors) == 1:
+        last_call()
+    elif errors:
         raise ValueError(*errors)
 
 
@@ -54,6 +57,12 @@ def _validate_path(k, v):
 
 
 def _validate_number(k, v):
+    if not v:
+        return 0
+    try:
+        v = int(v)
+    except Exception:
+        raise ValueError(f'--{k} takes a numeric argument')
     v = int(v or 0)
     if v < 0:
         raise ValueError(f'{k} must be non-negative')
@@ -62,19 +71,17 @@ def _validate_number(k, v):
 
 def _validate_theme(k, v):
     if v and v not in termtosvg.config.default_templates():
-        raise ValueError(f'Unknown asciinema theme {v}')
+        raise ValueError(f'Unknown asciinema theme "{v}"')
 
 
 def _read_keys(k, v):
     v = v or DEFAULT_TIMES
 
     if isinstance(v, str):
+        if set('-0123456789., ').issuperset(v):
+            v = f'[{v}]'
         if '[' in v:
             v = yaml.safe_load(v)
-        elif set('-0123456789., ').issuperset(v):
-            if '-' in v:
-                raise ValueError('Times must all be positive')
-            v = [float(s) for s in v.split()]
         else:
             v = [i.strip() for i in v.split(',')]
 
@@ -97,7 +104,10 @@ def _read_keys(k, v):
                 v += cast.keystroke_times()
 
         if errors:
-            raise ValueError('Cannot open', ', '.join(errors))
+            raise ValueError('Cannot open file: ' + ', '.join(errors))
+
+    if not all(t >= 0 for t in v):
+        raise ValueError('Times must all be positive')
 
     return [round(i, ASCIINEMA_DECIMALS) for i in v]
 

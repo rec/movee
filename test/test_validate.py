@@ -15,18 +15,19 @@ CAST_DIR = Path(__file__).parent.parent / 'data/recorded'
 CAST_FILES = ','.join(str(CAST_DIR / t) for t in TEST_CASTS)
 
 
-def _val(*s):
+def _val(*s, **kwds):
     flags = vars(parse.parse(s))
+    flags.update(kwds)
     validate.validate(flags)
     return flags
 
 
+@tdir.tdec('cast', svg={'foo': 'bar'})
 class ValidateTest(TestCase):
     def test_empty(self):
         actual = _val('s.py')
         assert actual == EMPTY
 
-    @tdir.tdec
     def test_full(self):
         actual = _val(
             's.py',
@@ -57,6 +58,89 @@ class ValidateTest(TestCase):
             for i in range(0, len(keys), 6):
                 print(keys[i : i + 6], '+')
         assert actual == expected
+
+    def test_edge1(self):
+        em = ErrorMaker(0.5, 0.25, 0.125)
+        actual = _val('s.py', errors=em)
+        assert actual == dict(EMPTY, errors=em)
+
+    def test_edge2(self):
+        em = ErrorMaker(0.5, 0.25, 0.125)
+        actual = _val('s.py', errors='{row: 0.5, column: 0.25, shift: 0.125}')
+        assert actual == dict(EMPTY, errors=em)
+
+    def test_edge3(self):
+        em = ErrorMaker(0.5, 0.25, 0.125)
+        errors = {'row': 0.5, 'column': 0.25, 'shift': 0.125}
+        actual = _val('s.py', errors=errors)
+        assert actual == dict(EMPTY, errors=em)
+
+    def test_edge4(self):
+        actual = _val('s.py', keys='0.125, 0.25')
+        assert actual == dict(EMPTY, keys=[0.125, 0.25])
+
+    def test_error1(self):
+        with self.assertRaises(ValueError) as m:
+            _val('s.py', '--cast=cast', '--svg=svg')
+        msg = '--cast: cast exists but is not a directory'
+        assert m.exception.args[0] == msg
+
+    def test_error2(self):
+        with self.assertRaises(ValueError) as m:
+            _val('s.py', '--errors=wombat')
+        msg = 'Did not understand --errors=wombat'
+        assert m.exception.args[0] == msg
+
+    def test_error3(self):
+        with self.assertRaises(ValueError) as m:
+            _val('s.py', '-wfrog')
+        msg = '--width takes a numeric argument'
+        assert m.exception.args[0] == msg
+
+    def test_error4(self):
+        with self.assertRaises(ValueError) as m:
+            _val('s.py', '--width=-4')
+        msg = 'width must be non-negative'
+        assert m.exception.args[0] == msg
+
+    def test_error5(self):
+        with self.assertRaises(ValueError) as m:
+            _val('s.py', '--theme=oops')
+        msg = 'Unknown asciinema theme "oops"'
+        assert m.exception.args[0] == msg
+
+    def test_error6(self):
+        with self.assertRaises(ValueError) as m:
+            _val('s.py', '--keys=oops')
+        msg = 'Cannot open file: oops'
+        assert m.exception.args[0] == msg
+
+    def test_error7(self):
+        with self.assertRaises(ValueError) as m:
+            _val('s.py', '--keys=[frog, 2]')
+        msg = "Do not understand --keys=['frog', 2]"
+        assert m.exception.args[0] == msg
+
+    def test_error8(self):
+        with self.assertRaises(ValueError) as m:
+            _val('s.py', '--keys=[-2, 2]')
+        msg = 'Times must all be positive'
+        assert m.exception.args[0] == msg
+
+    def test_error9(self):
+        with self.assertRaises(ValueError) as m:
+            _val('s.py', keys=range(3))
+        msg = 'Do not understand --keys=range(0, 3)'
+        assert m.exception.args[0] == msg
+
+    def test_errors(self):
+        with self.assertRaises(ValueError) as m:
+            _val('s.py', '--keys=oops', '--theme=oops')
+        msgs = (
+            'keys: Cannot open file: oops\n',
+            'theme: Unknown asciinema theme "oops"\n',
+        )
+        assert m.exception.args == msgs
 
 
 EMPTY = {
