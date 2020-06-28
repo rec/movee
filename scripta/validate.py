@@ -1,4 +1,5 @@
 from .cast import Cast
+from .times import DEFAULT_TIMES
 from .times import Times
 from .typing_errors import ErrorMaker
 from numbers import Number
@@ -6,14 +7,18 @@ from pathlib import Path
 import termtosvg.config
 import yaml
 
+ASCIINEMA_DECIMALS = 6
 
-def validate(cfg):
+
+def validate(cfg, raise_errors=True):
     errors = []
     for k, v in cfg.items():
         if f := VALIDATORS.get(k):
             try:
                 v2 = f(k, v)
             except Exception as e:
+                if raise_errors:
+                    raise
                 errors.append(f'{k}: {e}\n')
             else:
                 cfg[k] = v if v2 is None else v2
@@ -61,32 +66,40 @@ def _validate_theme(k, v):
 
 
 def _read_keys(k, v):
-    if v:
-        if isinstance(v, str):
-            if set('0123456789., ').issuperset(v):
-                return [float(s) for s in v.split()]
-        elif isinstance(v, (list, tuple)):
-            if all(isinstance(i, Number) for i in v):
-                return v
-            if not all(isinstance(i, str) for i in v):
-                raise ValueError(f'Do not understand --{k}={v}')
+    v = v or DEFAULT_TIMES
+
+    if isinstance(v, str):
+        if '[' in v:
+            v = yaml.safe_load(v)
+        elif set('-0123456789., ').issuperset(v):
+            if '-' in v:
+                raise ValueError('Times must all be positive')
+            v = [float(s) for s in v.split()]
         else:
+            v = [i.strip() for i in v.split(',')]
+
+    if not isinstance(v, (list, tuple)):
+        raise ValueError(f'Do not understand --{k}={v}')
+
+    if not all(isinstance(i, Number) for i in v):
+        if not all(isinstance(i, str) for i in v):
             raise ValueError(f'Do not understand --{k}={v}')
 
-        keys, errors = [], [], []
+        files = v
+        v, errors = [], []
 
-        for file in v:
+        for file in files:
             try:
                 cast = Cast.read(file)
             except Exception:
                 errors.append(file)
             else:
-                keys += cast.keystroke_times()
+                v += cast.keystroke_times()
 
-        if not errors:
-            return keys
+        if errors:
+            raise ValueError('Cannot open', ', '.join(errors))
 
-        raise ValueError('Cannot open', ', '.join(errors))
+    return [round(i, ASCIINEMA_DECIMALS) for i in v]
 
 
 VALIDATORS = {
