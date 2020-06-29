@@ -27,41 +27,41 @@ def read_config(flags):
         if not isinstance(src, str):
             raise TypeError('Expected str or dict')
 
-        route = None
-        id = src
-        if any(c in src for c in '[{:'):
-            id = f'<argument {i}>'
+        if set('[{:').intersection(src):
             data = src
+            src = f'<argument {i}>'
 
-        elif not (p := Path(src)).exists():
-            route = dont_exist
+        elif any(src.endswith(s) for s in SCRIPT_SUFFIXES):
+            scripts.append(src)
+            return
 
-        elif p.suffix in SCRIPT_SUFFIXES:
-            route = scripts
-
-        elif p.suffix not in CONFIG_SUFFIXES:
-            route = unknown_suffix
+        elif not any(src.endswith(s) for s in CONFIG_SUFFIXES):
+            unknown_suffix.append(src)
+            return
 
         else:
-            data = p.read_text()
+            data = Path(src).read_text()
 
-        if route is None:
-            try:
-                cfg = yaml.safe_load(data)
-                if not isinstance(cfg, dict):
-                    raise TypeError('Expected str or dict')
-                return cfg
-            except yaml.parser.ParserError as e:
-                route = exceptions
-                id = f'{id}: {e}'
+        try:
+            cfg = yaml.safe_load(data)
+            if not isinstance(cfg, dict):
+                raise TypeError('Expected str or dict')
+            return cfg
+        except yaml.parser.ParserError as e:
+            exceptions.append(f'{src}: {e}')
 
-        route.append(id)
-        return {}
+    configs = [route_source(i, c) or {} for i, c in enumerate(sources)]
 
-    configs = [route_source(i, c) for i, c in enumerate(sources)]
+    config = {}
+    for c in configs:
+        p = c.pop('sources', [])
+        scripts += p
+        config.update(c)
+
+    sources = [Path(s) for s in scripts]
 
     errors = []
-    if dont_exist:
+    if dont_exist := [str(s) for s in sources if not s.exists()]:
         errors.append('Cannot find %s\n' % ' '.join(dont_exist))
     if unknown_suffix:
         errors.append('Suffix unknown: %s\n' % ' '.join(unknown_suffix))
@@ -71,10 +71,7 @@ def read_config(flags):
     if errors:
         raise ValueError(*errors)
 
-    config = {'sources': scripts}
-    for cfg in configs:
-        scripts.extend(cfg.pop('sources', []))
-        config.update(cfg)
+    config['sources'] = sources
 
     for k, v in flags.items():
         if v or (k not in config) or (k == 'svg' and v is None):

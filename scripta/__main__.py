@@ -1,13 +1,15 @@
 from . import config
 from . import parse
 from . import scripta
+from . import validate
 import sys
 import traceback
 
 
 def main(args=None):  # pragma: no cover
-    flags = parse.parse(args)
-    cfg = config.to_config(vars(flags))
+    flags = vars(parse.parse(args))
+    cfg = config.read_config(flags)
+    validate.validate(cfg)
 
     try:
         scripta.scripta(**cfg)

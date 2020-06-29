@@ -1,3 +1,4 @@
+from pathlib import Path
 from scripta import config
 from scripta import parse
 from unittest import TestCase
@@ -18,44 +19,39 @@ SOURCES = ['c1.yml', 's.py', 'c2.yml', '{sources: [s.sh]}']
 )
 class ConfigTest(TestCase):
     def test_config(self):
-        for sources in (SOURCES, {'sources': SOURCES}):
+        s2 = {'sources': SOURCES[:-1] + ['s.sh']}
+        for sources in (SOURCES, s2):
             actual = config.read_config(sources)
             expected = {
                 'width': 100,
-                'sources': ['s.py', 's.sh'],
+                'sources': [Path('s.py'), Path('s.sh')],
                 'upload': True,
                 'verbose': True,
             }
             assert actual == expected
 
-    def test_svg0(self):
-        flags = vars(parse.parse('s.py'.split()))
-        actual = config.read_config(flags)
-        expected = dict(EMPTY, sources=['s.py'], svg='')
-        assert actual == expected
-
     def test_svg1(self):
         sources = [{'sources': ['s.py'], 'svg': 'ph/'}, {'svg': None}]
         actual = config.read_config(sources)
-        expected = {'sources': ['s.py'], 'svg': None}
+        expected = {'sources': [Path('s.py')], 'svg': None}
         assert actual == expected
 
     def test_svg2(self):
         flags = vars(parse.parse('s.py c3.yml --svg=ph/'.split()))
         actual = config.read_config(flags)
-        expected = dict(EMPTY, sources=['s.py'], svg='ph/')
+        expected = dict(EMPTY, sources=[Path('s.py')], svg='ph/')
         assert actual == expected
 
     def test_svg3(self):
         flags = vars(parse.parse('s.py c3.yml'.split()))
         actual = config.read_config(flags)
-        expected = dict(EMPTY, sources=['s.py'], svg='wombat')
+        expected = dict(EMPTY, sources=[Path('s.py')], svg='wombat')
         assert actual == expected
 
     def test_svg4(self):
         flags = vars(parse.parse('s.py c3.yml --svg'.split()))
         actual = config.read_config(flags)
-        expected = dict(EMPTY, sources=['s.py'], svg=None)
+        expected = dict(EMPTY, sources=[Path('s.py')], svg=None)
         assert actual == expected
 
     def test_errors1(self):

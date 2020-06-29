@@ -27,8 +27,8 @@ class CastRecorder:
             if prompt:
                 self.ps[0] = self.prompt
 
-    async def record(self):
-        self.cast = Cast()
+    async def record(self, cast=None):
+        self.cast = cast or Cast()
         self.start_time = time.time()
         self.chars = 0
 

@@ -1,4 +1,5 @@
 from pathlib import Path
+from scripta import config
 from scripta import parse
 from scripta import validate
 from scripta.times import DEFAULT_TIMES
@@ -18,11 +19,12 @@ CAST_FILES = ','.join(str(CAST_DIR / t) for t in TEST_CASTS)
 def _val(*s, **kwds):
     flags = vars(parse.parse(s))
     flags.update(kwds)
-    validate.validate(flags)
-    return flags
+    cfg = config.read_config(flags)
+    validate.validate(cfg)
+    return cfg
 
 
-@tdir.tdec('cast', svg={'foo': 'bar'})
+@tdir.tdec('cast', 's.py', 's.sh', svg={'foo': 'bar'})
 class ValidateTest(TestCase):
     def test_empty(self):
         actual = _val('s.py')
@@ -43,7 +45,7 @@ class ValidateTest(TestCase):
 
         expected = dict(
             EMPTY,
-            cast='kast',
+            cast=Path('kast'),
             svg=None,
             errors=ErrorMaker(0.5, 0.25, 0.125),
             times=Times(keystroke_max=0.25, keystroke_scale=0.5),
@@ -62,6 +64,7 @@ class ValidateTest(TestCase):
     def test_edge1(self):
         em = ErrorMaker(0.5, 0.25, 0.125)
         actual = _val('s.py', errors=em)
+        assert actual['sources'] == [Path('s.py')]
         assert actual == dict(EMPTY, errors=em)
 
     def test_edge2(self):
@@ -150,7 +153,7 @@ EMPTY = {
     'height': 0,
     'keys': DEFAULT_TIMES,
     'prompt': None,
-    'sources': ['s.py'],
+    'sources': [Path('s.py')],
     'svg': '',
     'theme': None,
     'times': Times(),

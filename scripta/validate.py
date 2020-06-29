@@ -54,6 +54,7 @@ def _validate_path(k, v):
             path.mkdir(parents=True, exist_ok=True)
         elif not path.is_dir():
             raise ValueError(f'--cast: {k} exists but is not a directory')
+        return path
 
 
 def _validate_number(k, v):
