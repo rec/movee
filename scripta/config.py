@@ -1,5 +1,4 @@
 from . import parse
-from argparse import Namespace
 from pathlib import Path
 import yaml
 
@@ -10,9 +9,7 @@ CONFIG_KEYS = {a.dest for a in parse.PARSER._actions}
 # THEME = 'solarized_light'
 
 
-def read_config(args):
-    flags = vars(args) if isinstance(args, Namespace) else args
-
+def read_config(flags):
     if isinstance(flags, dict):
         sources = flags.pop('sources', [])
     else:
@@ -85,4 +82,4 @@ def read_config(args):
 
     if unknown_keys := set(config) - CONFIG_KEYS:
         raise ValueError('Invalid for config: %s\n' % ' ,'.join(unknown_keys))
-    return Namespace(**config)
+    return config

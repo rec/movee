@@ -26,37 +26,37 @@ class ConfigTest(TestCase):
                 'upload': True,
                 'verbose': True,
             }
-            assert vars(actual) == expected
+            assert actual == expected
 
     def test_svg0(self):
         flags = vars(parse.parse('s.py'.split()))
         actual = config.read_config(flags)
         expected = dict(EMPTY, sources=['s.py'], svg='')
-        assert vars(actual) == expected
+        assert actual == expected
 
     def test_svg1(self):
         sources = [{'sources': ['s.py'], 'svg': 'ph/'}, {'svg': None}]
         actual = config.read_config(sources)
         expected = {'sources': ['s.py'], 'svg': None}
-        assert vars(actual) == expected
+        assert actual == expected
 
     def test_svg2(self):
         flags = vars(parse.parse('s.py c3.yml --svg=ph/'.split()))
         actual = config.read_config(flags)
         expected = dict(EMPTY, sources=['s.py'], svg='ph/')
-        assert vars(actual) == expected
+        assert actual == expected
 
     def test_svg3(self):
         flags = vars(parse.parse('s.py c3.yml'.split()))
         actual = config.read_config(flags)
         expected = dict(EMPTY, sources=['s.py'], svg='wombat')
-        assert vars(actual) == expected
+        assert actual == expected
 
     def test_svg4(self):
         flags = vars(parse.parse('s.py c3.yml --svg'.split()))
         actual = config.read_config(flags)
         expected = dict(EMPTY, sources=['s.py'], svg=None)
-        assert vars(actual) == expected
+        assert actual == expected
 
     def test_errors1(self):
         with self.assertRaises(ValueError) as m:
