@@ -5,6 +5,7 @@ Represents a single asciinema file for reading or writing
 from . import constants
 from .line import Line
 import json
+import safer
 
 EPSILON = 0.001
 HEADER = {'version': 2, 'width': 100, 'height': 40}
@@ -41,6 +42,9 @@ class Cast:
             self.lines.append(line)
 
     def write(self, fp):
+        if isinstance(fp, str):
+            with safer.open(fp, 'w') as fp2:
+                return self.write(fp2)
         print(json.dumps(self.header), file=fp)
         for line in self.lines:
             print(json.dumps(line.to_list()), file=fp)

@@ -12,6 +12,8 @@ class TestCastRecorder(IsolatedAsyncioTestCase):
     async def test_bash(self):
         with tdir.tdir({'test.sh': 'echo HELLO\npwd\n'}):
             await CastRecorder('test.sh').record_to('test.cast')
+            Cast.read('test.cast').write('/code/scripta/test/test.cast')
+
             actual = [i.chars for i in Cast.read('test.cast').lines]
             expected = [
                 constants.CONTROL_L,

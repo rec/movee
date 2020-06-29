@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="terminal" baseProfile="full" viewBox="0 0 800 682" width="800" version="1.1">
+    <defs>
+        <termtosvg:template_settings xmlns:termtosvg="https://github.com/nbedos/termtosvg">
+            <termtosvg:screen_geometry columns="100" rows="40"/>
+            <termtosvg:animation type="css"/>
+        </termtosvg:template_settings>
+        <style type="text/css" id="generated-style"><![CDATA[#screen {
+                font-family: 'DejaVu Sans Mono', monospace;
+                font-style: normal;
+                font-size: 14px;
+            }
+
+        text {
+            dominant-baseline: text-before-edge;
+            white-space: pre;
+        }
+    
+            :root {
+                --animation-duration: 2658ms;
+            }
+
+            @keyframes roll {
+                0.000%{transform:translateY(0px)}
+2.671%{transform:translateY(-714px)}
+8.051%{transform:translateY(-1428px)}
+10.760%{transform:translateY(-2142px)}
+13.469%{transform:translateY(-2856px)}
+16.178%{transform:translateY(-3570px)}
+18.886%{transform:translateY(-4284px)}
+21.595%{transform:translateY(-4998px)}
+24.304%{transform:translateY(-5712px)}
+27.013%{transform:translateY(-6426px)}
+29.722%{transform:translateY(-7140px)}
+32.430%{transform:translateY(-7854px)}
+35.139%{transform:translateY(-8568px)}
+37.848%{transform:translateY(-9282px)}
+40.557%{transform:translateY(-9996px)}
+43.266%{transform:translateY(-10710px)}
+46.012%{transform:translateY(-11424px)}
+48.721%{transform:translateY(-12138px)}
+51.430%{transform:translateY(-12852px)}
+56.885%{transform:translateY(-13566px)}
+62.378%{transform:translateY(-14280px)}
+100.000%{transform:translateY(-14280px)}
+            }
+
+            #screen_view {
+                animation-duration: 2658ms;
+                animation-iteration-count:infinite;
+                animation-name:roll;
+                animation-timing-function: steps(1,end);
+                animation-fill-mode: forwards;
+            }
+        ]]></style>
+        <style type="text/css" id="user-style">
+            /* The colors defined below are the default 16 colors used for rendering text of the terminal. Adjust
+               them as needed.
+               Solarized light color theme (http://ethanschoonover.com/solarized) */
+            .foreground {fill: #586e75;}
+            .background {fill: #fdf6e3;}
+            .color0 {fill: #fdf6e3;}
+            .color1 {fill: #dc322f;}
+            .color2 {fill: #859900;}
+            .color3 {fill: #b58900;}
+            .color4 {fill: #268bd2;}
+            .color5 {fill: #6c71c4;}
+            .color6 {fill: #2aa198;}
+            .color7 {fill: #586e75;}
+            .color8 {fill: #839496;}
+            .color9 {fill: #cb4b16;}
+            .color10 {fill: #eee8d5;}
+            .color11 {fill: #93a1a1;}
+            .color12 {fill: #657b83;}
+            .color13 {fill: #073642;}
+            .color14 {fill: #d33682;}
+            .color15 {fill: #002b36;}
+        </style>
+    </defs>
+    <svg id="screen" width="800" height="680" viewBox="0 0 800 680" preserveAspectRatio="xMidYMin slice"><rect class="background" height="100%" width="100%" x="0" y="0"/><defs><g id="g1"><text x="0" textLength="8" class="background"> </text></g><g id="g2"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="16" class="foreground">$ </text><text x="168" textLength="8" class="background"> </text></g><g id="g3"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="24" class="foreground">$ 3</text><text x="176" textLength="8" class="background"> </text></g><g id="g4"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="16" class="foreground">$ </text><text x="168" textLength="8" class="background"> </text><text x="176" textLength="624" class="foreground">                                                                              </text></g><g id="g5"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="24" class="foreground">$ e</text><text x="176" textLength="8" class="background"> </text><text x="184" textLength="616" class="foreground">                                                                             </text></g><g id="g6"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="32" class="foreground">$ ec</text><text x="184" textLength="8" class="background"> </text><text x="192" textLength="608" class="foreground">                                                                            </text></g><g id="g7"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="40" class="foreground">$ ech</text><text x="192" textLength="8" class="background"> </text><text x="200" textLength="600" class="foreground">                                                                           </text></g><g id="g8"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="48" class="foreground">$ echo</text><text x="200" textLength="8" class="background"> </text><text x="208" textLength="592" class="foreground">                                                                          </text></g><g id="g9"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="56" class="foreground">$ echo </text><text x="208" textLength="8" class="background"> </text><text x="216" textLength="584" class="foreground">                                                                         </text></g><g id="g10"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="64" class="foreground">$ echo N</text><text x="216" textLength="8" class="background"> </text><text x="224" textLength="576" class="foreground">                                                                        </text></g><g id="g11"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="64" class="foreground">$ echo H</text><text x="216" textLength="8" class="background"> </text><text x="224" textLength="576" class="foreground">                                                                        </text></g><g id="g12"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="72" class="foreground">$ echo HE</text><text x="224" textLength="8" class="background"> </text><text x="232" textLength="568" class="foreground">                                                                       </text></g><g id="g13"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="80" class="foreground">$ echo HEl</text><text x="232" textLength="8" class="background"> </text><text x="240" textLength="560" class="foreground">                                                                      </text></g><g id="g14"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="80" class="foreground">$ echo HEL</text><text x="232" textLength="8" class="background"> </text><text x="240" textLength="560" class="foreground">                                                                      </text></g><g id="g15"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="88" class="foreground">$ echo HELL</text><text x="240" textLength="8" class="background"> </text><text x="248" textLength="552" class="foreground">                                                                     </text></g><g id="g16"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="96" class="foreground">$ echo HELLO</text><text x="248" textLength="8" class="background"> </text><text x="256" textLength="544" class="foreground">                                                                    </text></g><g id="g17"><text x="0" textLength="16" class="foreground">&#9654; </text><text x="16" textLength="24" class="color4">tom</text><text x="40" textLength="8" class="color1">:</text><text x="48" textLength="104" class="color2">/code/scripta</text><text x="152" textLength="648" class="foreground">$ echo HELLO                                                                     </text></g><g id="g18"><text x="0" textLength="40" class="foreground">HELLO</text></g></defs><g id="screen_view"><g><rect x="0" y="0" width="8" height="17" class="foreground"/><use xlink:href="#g1" y="0"/></g><g><rect x="168" y="714" width="8" height="17" class="foreground"/><use xlink:href="#g2" y="714"/></g><g><rect x="176" y="1428" width="8" height="17" class="foreground"/><use xlink:href="#g3" y="1428"/></g><g><rect x="168" y="2142" width="8" height="17" class="foreground"/><use xlink:href="#g4" y="2142"/></g><g><rect x="176" y="2856" width="8" height="17" class="foreground"/><use xlink:href="#g5" y="2856"/></g><g><rect x="184" y="3570" width="8" height="17" class="foreground"/><use xlink:href="#g6" y="3570"/></g><g><rect x="192" y="4284" width="8" height="17" class="foreground"/><use xlink:href="#g7" y="4284"/></g><g><rect x="200" y="4998" width="8" height="17" class="foreground"/><use xlink:href="#g8" y="4998"/></g><g><rect x="208" y="5712" width="8" height="17" class="foreground"/><use xlink:href="#g9" y="5712"/></g><g><rect x="216" y="6426" width="8" height="17" class="foreground"/><use xlink:href="#g10" y="6426"/></g><g><rect x="208" y="7140" width="8" height="17" class="foreground"/><use xlink:href="#g9" y="7140"/></g><g><rect x="216" y="7854" width="8" height="17" class="foreground"/><use xlink:href="#g11" y="7854"/></g><g><rect x="224" y="8568" width="8" height="17" class="foreground"/><use xlink:href="#g12" y="8568"/></g><g><rect x="232" y="9282" width="8" height="17" class="foreground"/><use xlink:href="#g13" y="9282"/></g><g><rect x="224" y="9996" width="8" height="17" class="foreground"/><use xlink:href="#g12" y="9996"/></g><g><rect x="232" y="10710" width="8" height="17" class="foreground"/><use xlink:href="#g14" y="10710"/></g><g><rect x="240" y="11424" width="8" height="17" class="foreground"/><use xlink:href="#g15" y="11424"/></g><g><rect x="248" y="12138" width="8" height="17" class="foreground"/><use xlink:href="#g16" y="12138"/></g><g><use xlink:href="#g17" y="12852"/><rect x="0" y="12869" width="8" height="17" class="foreground"/><use xlink:href="#g1" y="12869"/></g><g><use xlink:href="#g17" y="13566"/><use xlink:href="#g18" y="13583"/><rect x="0" y="13600" width="8" height="17" class="foreground"/><use xlink:href="#g1" y="13600"/></g><g><use xlink:href="#g17" y="14280"/><use xlink:href="#g18" y="14297"/><rect x="168" y="14314" width="8" height="17" class="foreground"/><use xlink:href="#g2" y="14314"/></g></g></svg>
+</svg>
