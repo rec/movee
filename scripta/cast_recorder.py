@@ -37,8 +37,8 @@ class CastRecorder:
             await self.runner(self._callback, fp)
         return self.cast
 
-    async def record_to(self, target=None):
-        await self.record()
+    async def record_to(self, target=None, cast=None):
+        await self.record(cast)
         with safer.writer(target) as fp:
             self.cast.write(fp)
 

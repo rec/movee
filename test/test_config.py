@@ -109,6 +109,7 @@ EMPTY = {
     'prompt': None,
     'sources': None,
     'svg': None,
+    'quit_on_error': False,
     'theme': None,
     'times': None,
     'upload': False,

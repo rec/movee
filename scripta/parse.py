@@ -12,6 +12,9 @@ def _parser():
     p.add_argument('--height', '-i', help=_HEIGHT_HELP)
     p.add_argument('--keys', '-k', help=_KEYS_HELP)
     p.add_argument('--prompt', '-p', help=_PROMPT_HELP)
+    p.add_argument(
+        '--quit_on_error', '-q', action='store_true', help=_QUIT_ON_ERROR_HELP
+    )
     p.add_argument('--svg', '-s', default='', nargs='?', help=_SVG_HELP)
     p.add_argument('--theme', '-m', help=_THEME_HELP)
     p.add_argument('--times', '-t', help=_TIMES_HELP)
@@ -38,6 +41,7 @@ _HEIGHT_HELP = """Height of the terminal in characters"""
 _SOURCES_HELP = """Sources to run, either config files or scripts"""
 _THEME_HELP = """Name of asciinema theme"""
 _TIMES_HELP = """Set timing parameters"""
+_QUIT_ON_ERROR_HELP = """Quit immediately if there is an error"""
 _UPLOAD_HELP = """Upload the cast file to asciinema.com"""
 _VERBOSE_HELP = """Print more stuff"""
 

@@ -1,3 +1,4 @@
+from . import test_config
 from pathlib import Path
 from scripta import config
 from scripta import parse
@@ -147,20 +148,18 @@ class ValidateTest(TestCase):
 
 
 EMPTY = {
-    'cast': None,
-    'dry_run': False,
     'errors': ErrorMaker(),
     'height': 0,
     'keys': DEFAULT_TIMES,
-    'prompt': None,
     'sources': [Path('s.py')],
     'svg': '',
-    'theme': None,
     'times': Times(),
     'upload': False,
     'verbose': False,
     'width': 0,
 }
+
+EMPTY = dict(test_config.EMPTY, **EMPTY)
 
 CAST_TIMES = (
     [0.216651, 0.103281, 0.112404, 0.176665, 0.071936, 0.159863]
