@@ -1,54 +1,63 @@
+from . import config
+from . import parse
 from . import render
 from . import upload
+from . import validate
 from .cast import Cast
 from .cast_recorder import CastRecorder
-from argparse import Namespace
 from pathlib import Path
-import asyncio
 import sys
 import traceback
 import yaml
 
 
-def scripta(*, dry_run=False, **config):
+async def scripta(args=None):
+    await _scripta(**validated_config(args))
+
+
+def validated_config(args=None, **kwargs):
+    flags = vars(parse.parse(args))
+    flags.update(kwargs)
+    cfg = config.read_config(flags)
+    validate.validate(cfg)
+    return cfg
+
+
+async def _scripta(*, sources, dry_run, verbose, **config):
     if dry_run:
         yaml.safe_dump(config, sys.stdout)
-        return
+        return 0
 
-    return asyncio.run(_scripta(Namespace(config)))
-
-
-async def _scripta(config):
     result = 0
-
-    for source in config.sources:
+    for source in sources:
         try:
-            await _one_script(config, source)
+            await _once(source, **config)
         except Exception as e:
-            if config.verbose:
+            if verbose:
                 traceback.print_exc()
             print(f'ERROR: {e}', file=sys.stderr)
             result = -1
-            if config.quit_on_error:
+            if config['quit_on_error']:
                 break
 
     return result
 
 
-async def _one_script(config, source):
-    rec = CastRecorder(source, config.errors, config.keys, config.prompt)
-    cast = Cast(width=config.width, height=config.height)
-
+async def _once(
+    source, *, errors, keys, prompts, width, height, cast, svg, theme, prompt
+):
+    rec = CastRecorder(source, errors, keys, prompt)
     cast_file = source.with_suffix(source.suffix + '.cast')
     if config.cast:
-        cast_file = Path(config.cast) / cast_file.name
+        cast_file = Path(cast) / cast_file.name
 
-    await rec.record_to(cast_file, cast)
+    await rec.record_to(cast_file, Cast(width=width, height=height))
 
-    if config.svg is not None:
+    if svg is not None:
         svg_file = cast_file.with_suffix(source.suffix + '.svg')
-        if config.svg:
-            svg_file = Path(config.svg) / svg_file.name
-        render.render_file(cast_file, svg_file, config.theme)
-    if config.upload:
+        if svg:
+            svg_file = Path(svg) / svg_file.name
+        render.render_file(cast_file, svg_file, theme)
+
+    if upload:
         upload.upload(cast_file)

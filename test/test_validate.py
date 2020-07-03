@@ -1,8 +1,6 @@
 from . import test_config
 from pathlib import Path
-from scripta import config
-from scripta import parse
-from scripta import validate
+from scripta import scripta
 from scripta.times import DEFAULT_TIMES
 from scripta.times import Times
 from scripta.typing_errors import ErrorMaker
@@ -17,12 +15,8 @@ CAST_DIR = Path(__file__).parent.parent / 'data/recorded'
 CAST_FILES = ','.join(str(CAST_DIR / t) for t in TEST_CASTS)
 
 
-def _val(*s, **kwds):
-    flags = vars(parse.parse(s))
-    flags.update(kwds)
-    cfg = config.read_config(flags)
-    validate.validate(cfg)
-    return cfg
+def _val(*s, **kwargs):
+    return scripta.validated_config(s, **kwargs)
 
 
 @tdir.tdec('cast', 's.py', 's.sh', svg={'foo': 'bar'})
