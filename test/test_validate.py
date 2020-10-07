@@ -19,7 +19,7 @@ def _val(*s, **kwargs):
     return scripta.validated_config(s, **kwargs)
 
 
-@tdir.tdec('cast', 's.py', 's.sh', svg={'foo': 'bar'})
+@tdir('cast', 's.py', 's.sh', svg={'foo': 'bar'})
 class ValidateTest(TestCase):
     def test_empty(self):
         actual = _val('s.py')

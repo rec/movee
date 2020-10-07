@@ -7,7 +7,7 @@ import tdir
 SOURCES = ['c1.yml', 's.py', 'c2.yml', '{sources: [s.sh]}']
 
 
-@tdir.tdec(
+@tdir(
     's.py',
     's.sh',
     's.junk',

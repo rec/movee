@@ -7,7 +7,7 @@ CAST_FILE = Path(__file__).parent / 'sample.cast'
 SVG_FILE = Path(__file__).parent / 'sample.svg'
 
 
-@tdir.tdec
+@tdir
 class TestRender(TestCase):
     def test_render(self):
         render.render_file(CAST_FILE, 'test.svg')

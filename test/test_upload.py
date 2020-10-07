@@ -7,7 +7,7 @@ import tdir
 FILE = Path('test.cast')
 
 
-@tdir.tdec(str(FILE))
+@tdir(str(FILE))
 class TestUpload(TestCase):
     def test_read(self):
         with mock.patch('scripta.upload._call') as mp:
