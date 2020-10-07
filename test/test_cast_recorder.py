@@ -10,7 +10,7 @@ import tdir
 @skip_if_travis
 class TestCastRecorder(IsolatedAsyncioTestCase):
     async def test_bash(self):
-        with tdir.tdir({'test.sh': 'echo HELLO\npwd\n'}):
+        with tdir({'test.sh': 'echo HELLO\npwd\n'}):
             await CastRecorder('test.sh').record_to('test.cast')
             Cast.read('test.cast').write('/code/scripta/test/test.cast')
 
@@ -49,7 +49,7 @@ class TestCastRecorder(IsolatedAsyncioTestCase):
             assert actual == expected
 
     async def test_record_python(self):
-        with tdir.tdir({'test.py': TEST_PY}):
+        with tdir({'test.py': TEST_PY}):
             await CastRecorder('test.py').record_to('test.cast')
             actual = [i.chars for i in Cast.read('test.cast').lines]
             expected = [
