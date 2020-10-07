@@ -3,6 +3,7 @@ import scripta
 _classifiers = [
     'Development Status :: 4 - Beta',
     'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: MIT License',
     'Topic :: Software Development :: Libraries',
