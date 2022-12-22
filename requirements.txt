@@ -1,4 +1,0 @@
-dataclasses
-safer
-termtosvg
-pyyaml
