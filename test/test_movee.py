@@ -1,5 +1,5 @@
-from scripta import cast_recorder
-from scripta import scripta
+from movee import cast_recorder
+from movee import movee
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import patch
 import asyncio
@@ -11,8 +11,8 @@ class CastRecorder(cast_recorder.CastRecorder):
         await asyncio.sleep(0)
 
 
-class TestScripta(IsolatedAsyncioTestCase):
-    @patch('scripta.scripta.CastRecorder', side_effect=CastRecorder)
-    async def NO_test_scripta(self):
+class TestMovee(IsolatedAsyncioTestCase):
+    @patch('movee.movee.CastRecorder', side_effect=CastRecorder)
+    async def NO_test_movee(self):
         with tdir():
-            await scripta.scripta()
+            await movee.movee()

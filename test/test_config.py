@@ -1,6 +1,6 @@
 from pathlib import Path
-from scripta import config
-from scripta import parse
+from movee import config
+from movee import parse
 from unittest import TestCase
 import tdir
 

@@ -1,5 +1,5 @@
 from pathlib import Path
-from scripta import render
+from movee import render
 from unittest import TestCase
 import tdir
 

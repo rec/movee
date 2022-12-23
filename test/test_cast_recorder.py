@@ -1,7 +1,7 @@
 from .travis import skip_if_travis
-from scripta import constants
-from scripta.cast import Cast
-from scripta.cast_recorder import CastRecorder, BASH_PS
+from movee import constants
+from movee.cast import Cast
+from movee.cast_recorder import CastRecorder, BASH_PS
 from unittest import IsolatedAsyncioTestCase
 import os
 import tdir
@@ -12,7 +12,7 @@ class TestCastRecorder(IsolatedAsyncioTestCase):
     async def test_bash(self):
         with tdir({'test.sh': 'echo HELLO\npwd\n'}):
             await CastRecorder('test.sh').record_to('test.cast')
-            Cast.read('test.cast').write('/code/scripta/test/test.cast')
+            Cast.read('test.cast').write('/code/movee/test/test.cast')
 
             actual = [i.chars for i in Cast.read('test.cast').lines]
             expected = [

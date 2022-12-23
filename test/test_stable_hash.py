@@ -1,4 +1,4 @@
-from scripta.stable_hash import stable_hash
+from movee.stable_hash import stable_hash
 from unittest import TestCase
 
 
