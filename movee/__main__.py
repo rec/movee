@@ -1,4 +1,4 @@
-from . import scripta
+from . import movee
 import asyncio
 import sys
 import traceback
@@ -6,7 +6,7 @@ import traceback
 
 def main(args=None):  # pragma: no cover
     try:
-        asyncio.run(scripta.scripta(args))
+        asyncio.run(movee.movee(args))
         return 0
     except Exception as e:
         print('ERROR:', e, file=sys.stderr)

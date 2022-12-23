@@ -1,4 +1,4 @@
-from scripta.cast_recorder import CastRecorder
+from movee.cast_recorder import CastRecorder
 import asyncio
 import sys
 

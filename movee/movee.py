@@ -11,8 +11,8 @@ import traceback
 import yaml
 
 
-async def scripta(args=None):
-    await _scripta(**validated_config(args))
+async def movee(args=None):
+    await _movee(**validated_config(args))
 
 
 def validated_config(args=None, **kwargs):
@@ -23,7 +23,7 @@ def validated_config(args=None, **kwargs):
     return cfg
 
 
-async def _scripta(*, sources, dry_run, verbose, **config):
+async def _movee(*, sources, dry_run, verbose, **config):
     if dry_run:
         yaml.safe_dump(config, sys.stdout)
         return 0

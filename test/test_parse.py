@@ -1,5 +1,5 @@
 from .test_config import EMPTY
-from scripta import parse
+from movee import parse
 from unittest import TestCase
 
 

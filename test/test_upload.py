@@ -1,5 +1,5 @@
 from pathlib import Path
-from scripta import upload
+from movee import upload
 from unittest import TestCase
 from unittest import mock
 import tdir
@@ -10,7 +10,7 @@ FILE = Path('test.cast')
 @tdir(str(FILE))
 class TestUpload(TestCase):
     def test_read(self):
-        with mock.patch('scripta.upload._call') as mp:
+        with mock.patch('movee.upload._call') as mp:
             mp.side_effect = [['', 'https://f.a'], ['https://f.b']]
             url, create = upload.upload(FILE)
             assert create
@@ -27,7 +27,7 @@ class TestUpload(TestCase):
             assert url == 'https://f.b'
 
     def test_error(self):
-        with mock.patch('scripta.upload._call') as mp:
+        with mock.patch('movee.upload._call') as mp:
             mp.side_effect = [['ERROR']]
             with self.assertRaises(ValueError) as m:
                 upload.upload(FILE)

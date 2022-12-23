@@ -1,5 +1,5 @@
 from .travis import IS_TRAVIS
-from scripta.waiter import Waiter
+from movee.waiter import Waiter
 from unittest import TestCase
 import time
 

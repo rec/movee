@@ -1,9 +1,9 @@
 from . import test_config
 from pathlib import Path
-from scripta import scripta
-from scripta.times import DEFAULT_TIMES
-from scripta.times import Times
-from scripta.typing_errors import ErrorMaker
+from movee import movee
+from movee.times import DEFAULT_TIMES
+from movee.times import Times
+from movee.typing_errors import ErrorMaker
 from unittest import TestCase
 import tdir
 
@@ -16,7 +16,7 @@ CAST_FILES = ','.join(str(CAST_DIR / t) for t in TEST_CASTS)
 
 
 def _val(*s, **kwargs):
-    return scripta.validated_config(s, **kwargs)
+    return movee.validated_config(s, **kwargs)
 
 
 @tdir('cast', 's.py', 's.sh', svg={'foo': 'bar'})

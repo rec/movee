@@ -1,4 +1,4 @@
-from scripta.times import KeyTimes
+from movee.times import KeyTimes
 from unittest import TestCase
 
 
